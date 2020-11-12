@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Visualization on Yue Han</title>
+    <link>https://yuehan857.github.io/tags/visualization/</link>
+    <description>Recent content in Visualization on Yue Han</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 30 Sep 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://yuehan857.github.io/tags/visualization/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>HW3: Malaria Visualization</title>
+      <link>https://yuehan857.github.io/posts/malaria_visualizations/</link>
+      <pubDate>Wed, 30 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://yuehan857.github.io/posts/malaria_visualizations/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

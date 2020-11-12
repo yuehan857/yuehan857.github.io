@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  <title>HW6: US Awarded PhDs Dashboard &middot; Yue Han</title>
+
+  <meta name="description" content="" />
+
+  
+
+<meta itemprop="name" content="HW6: US Awarded PhDs Dashboard">
+<meta itemprop="description" content="">
+<meta itemprop="datePublished" content="2020-11-05T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-11-05T00:00:00+00:00" />
+<meta itemprop="wordCount" content="768">
+
+
+
+<meta itemprop="keywords" content="Python,Plotly,Dash," />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HW6: US Awarded PhDs Dashboard"/>
+<meta name="twitter:description" content=""/>
+
+
+<meta property="og:title" content="HW6: US Awarded PhDs Dashboard" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuehan857.github.io/posts/phds_awarded_dash/" />
+<meta property="article:published_time" content="2020-11-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-11-05T00:00:00+00:00" />
+
+
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/print.css"
+        media="print">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/poole.css">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/hyde.css">
+
+  
+<style type="text/css">
+  .sidebar {
+    background-color: #749aad;
+  }
+
+  .read-more-link a {
+    border-color: #749aad;
+  }
+
+  .pagination li a {
+    color: #749aad;
+    border: 1px solid #749aad;
+  }
+
+  .pagination li.active a {
+    background-color: #749aad;
+  }
+
+  .pagination li a:hover {
+    background-color: #749aad;
+    opacity: 0.75;
+  }
+
+  footer a,
+  .content a,
+  .related-posts li a:hover {
+    color: #749aad;
+  }
+</style>
+
+
+
+  <link type="text/css" rel="stylesheet" href="/css/blog.css">
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+        crossorigin="anonymous" />
+
+  <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  </head>
+<body>
+  <aside class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      
+        
+        <div class="author-image">
+          <img src="/images/profile.png" class="img-circle img-headshot center" alt="Profile Picture">
+        </div>
+        
+      
+
+      <h1>Yue Han</h1>
+
+      
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="https://yuehan857.github.io/">Home</a>
+        </li>
+        <li>
+          <a href="/posts/">Posts</a>
+        </li><li>
+          <a href="/categories/">Categories</a>
+        </li><li>
+          <a href="/tags/">Tags</a>
+        </li><li>
+          <a href="/about/">About</a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="social-icons">
+      
+      <a href="https://www.linkedin.com/public-profile/in/yue-han-339482154" rel="me" title="Linkedin" target="_blank">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://github.com/yuehan857" rel="me" title="GitHub" target="_blank">
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </a>
+      
+    </section>
+  </div>
+</aside>
+
+
+  <main class="content container">
+  <div class="post">
+  <h1>HW6: US Awarded PhDs Dashboard</h1>
+
+  <div class="post-date">
+    <time datetime="2020-11-05T00:00:00Z">Nov 5, 2020</time> &middot; 4 min read
+  </div>
+
+  <h1 id="dashboard-for-the-visualizing-awarded-phds-in-us">Dashboard for the visualizing awarded PhDs in US</h1>
+<p><img src="/images/dash.png" alt=""></p>
+<p>In <a href="https://ncses.nsf.gov/pubs/nsf20301/data-tables">NSF 2018 Report</a> website, there are datasets about awarded PhD in US.</p>
+<p><strong>What is the data about?</strong></p>
+<ul>
+<li>These tables present detailed data on the demographic characteristics, educational history, sources of financial support, and postgraduation plans of doctorate recipients</li>
+</ul>
+<p>In the report, almost all the dataset were visualized with some summary analysis. As an international student, I am interested about visa holder PhDs. Besides, I am also interested on the institution who granted the Phd degree. So my dashboard will contains the following elements:</p>
+<ol>
+<li>International student profile</li>
+</ol>
+<ul>
+<li>The origin of international students</li>
+</ul>
+<ol start="2">
+<li>Institutions granting PhD degree</li>
+</ol>
+<ul>
+<li>Geo visualization by states</li>
+<li>Overall and Spesific ranking</li>
+</ul>
+<p>At last, I will create a dashboard to display my visualization in a decent way.</p>
+<h2 id="first-of-all-lets-load-in-the-data">First of all, let&rsquo;s load in the data</h2>
+<p>All the data are in excel format, so we need to use <code>pandas.read_excel</code> to load in the data. For my purposes, I use table 3-6, 9, 10, 25 and 26. I slightly modify the table for easy handling in python. Once thing I would like to mention is that some origin data is not in a very good shape, some of the tables have hierarchical columns name, like in the following.</p>
+<p><img src="/images/badstructure.png" alt=""></p>
+<p>To handle this, I use <code>wide_to_long</code> method for dataframe. After manipulating, the data frame won&rsquo;t have  hierarchical columns name.</p>
+<p>After loading the PhD data I need, I also load in two geo info data from  <a href="https://www.naturalearthdata.com/downloads/">Natural Earth</a>.</p>
+<h2 id="then-we-do-some-visualization">Then we do some visualization</h2>
+<p>As I mentioned in the previous part, I am interested in international PhD students and the states and institutions PhD students in.</p>
+<h3 id="where-do-international-students-come-from">Where do international students come from?</h3>
+<p>Firstly, I create a map plot of the top 50 countries where international students come from.</p>
+<p><img src="/images/hw6_1.png" alt=""></p>
+<p>Apparently, China is the biggest origin countries of international students, which is not surprise. India comes second, South Korea, Iran and Taiwan are the third and forth. Notice that all of them are Asia countries or entities. For  countries outside top 10, the number of PhD students are relatively small, so we may focus on the top 10 countries and have a closer look into them.</p>
+<p><img src="/images/hw6_2.png" alt="">
+<img src="/images/hw6_4.png" alt="">
+<img src="/images/hw6_6.png" alt=""></p>
+<p>From the above plot, we can see that from 2009 to 2018, more and more chinese students come to US to pursue their PhD degree, while Indian PhD students decreased a little. Top 3 countries are all same for 2009, 2013 and 2018, but the rest changed through 9 years: Iran became top 4 in 2018 from top 10 in 2009, while Taiwan, Japan and Canada&rsquo;s ranks fell.</p>
+<h3 id="what-state-and-institution-have-the-most-phd-students">What state and institution have the most PhD students?</h3>
+<p>Next we may what to explore in what states, there are more PhD students. In the following three map plots, we can find the infromation of how many psychology and social sicence PhD students in each states.</p>
+<p><img src="/images/hw6_8.png" alt="">
+<img src="/images/hw6_9.png" alt="">
+<img src="/images/hw6_10.png" alt=""></p>
+<p>Obviously, California has the most psychology and social sicence PhD students, no matter it comes to the total number, male or female. The second states in New York and third is Texas. Three map plots looks very similar except for the legend on the side, indicating that the ratios of male and female students do not vary much state-wise, while the scale line suggests that in psychology and social sicence field, female overnumbers male.</p>
+<p>We also shows what institution have more PhD students in the following plots</p>
+<p><img src="/images/hw6_11.png" alt="">
+<img src="/images/hw6_12.png" alt=""></p>
+<p>We can see that for the top 50 institutions, the gap between each others are not big. U Michigan, Ann Arbor has the most PhD students while UCB comes next, both are prestigious public school. Notice that except for Walden U, all other top 10 school are public school, which make sense. The top 11 and top 12 are Standford and Harvard, two famous private school.</p>
+<p>As for school which has the most international PhD students, Purdue U comes the first, while  U Michigan rank 6. Except MIT, all other top 10 schools are public.</p>
+<p>The following plots shows the institution ranking by field and by race. They are more interactive plots and when you click on each block, you can find the institution rank in that specific category.</p>
+<p><img src="/images/hw6_13.png" alt="">
+<img src="/images/hw6_14.png" alt=""></p>
+<h2 id="create-a-dashboard-of-above-visualization">Create a dashboard of above visualization</h2>
+<p><img src="/images/dash.gif" alt=""></p>
+<p>I have not deployed my dashboard to a platform, so it can only run locally. I made a gif to show how it looks like. If you want to play with it, feel free to download my notebook in blow github repo and run it by yourself! (Don&rsquo;t forget to download necessary data files, otherwise it won&rsquo;t run sucessfully)</p>
+<h2 id="link-to-github-repo">Link to GitHub Repo:</h2>
+<p>All codes and necessary data are in <a href="https://github.com/yuehan857/us_phd_dashboard/tree/master">here</a>.</p>
+<h2 id="reference">Reference:</h2>
+<ol>
+<li><a href="https://dash.plotly.com">https://dash.plotly.com</a></li>
+<li><a href="https://dash-bootstrap-components.opensource.faculty.ai">https://dash-bootstrap-components.opensource.faculty.ai</a></li>
+</ol>
+</div>
+
+
+  </main>
+
+  <footer>
+  <div>
+    &copy; Yue Han 2020
+
+    &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
+
+    
+  </div>
+</footer>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\[','\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: {
+                equationNumbers: { autoNumber: "AMS" },
+                extensions: ["AMSmath.js", "AMSsymbols.js"]
+            }
+        }
+    });
+</script>
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
+          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
+          crossorigin="anonymous"></script>
+
+  <script src="/js/blog.js"></script>
+
+  
+</body>
+</html>

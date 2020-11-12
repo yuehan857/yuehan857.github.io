@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  <title>HW3: Malaria Visualization &middot; Yue Han</title>
+
+  <meta name="description" content="" />
+
+  
+
+<meta itemprop="name" content="HW3: Malaria Visualization">
+<meta itemprop="description" content="">
+<meta itemprop="datePublished" content="2020-09-30T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-09-30T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1575">
+
+
+
+<meta itemprop="keywords" content="Python,Visualization," />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HW3: Malaria Visualization"/>
+<meta name="twitter:description" content=""/>
+
+
+<meta property="og:title" content="HW3: Malaria Visualization" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuehan857.github.io/posts/malaria_visualizations/" />
+<meta property="article:published_time" content="2020-09-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-09-30T00:00:00+00:00" />
+
+
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/print.css"
+        media="print">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/poole.css">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/hyde.css">
+
+  
+<style type="text/css">
+  .sidebar {
+    background-color: #749aad;
+  }
+
+  .read-more-link a {
+    border-color: #749aad;
+  }
+
+  .pagination li a {
+    color: #749aad;
+    border: 1px solid #749aad;
+  }
+
+  .pagination li.active a {
+    background-color: #749aad;
+  }
+
+  .pagination li a:hover {
+    background-color: #749aad;
+    opacity: 0.75;
+  }
+
+  footer a,
+  .content a,
+  .related-posts li a:hover {
+    color: #749aad;
+  }
+</style>
+
+
+
+  <link type="text/css" rel="stylesheet" href="/css/blog.css">
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+        crossorigin="anonymous" />
+
+  <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  </head>
+<body>
+  <aside class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      
+        
+        <div class="author-image">
+          <img src="/images/profile.png" class="img-circle img-headshot center" alt="Profile Picture">
+        </div>
+        
+      
+
+      <h1>Yue Han</h1>
+
+      
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="https://yuehan857.github.io/">Home</a>
+        </li>
+        <li>
+          <a href="/posts/">Posts</a>
+        </li><li>
+          <a href="/categories/">Categories</a>
+        </li><li>
+          <a href="/tags/">Tags</a>
+        </li><li>
+          <a href="/about/">About</a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="social-icons">
+      
+      <a href="https://www.linkedin.com/public-profile/in/yue-han-339482154" rel="me" title="Linkedin" target="_blank">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://github.com/yuehan857" rel="me" title="GitHub" target="_blank">
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </a>
+      
+    </section>
+  </div>
+</aside>
+
+
+  <main class="content container">
+  <div class="post">
+  <h1>HW3: Malaria Visualization</h1>
+
+  <div class="post-date">
+    <time datetime="2020-09-30T00:00:00Z">Sep 30, 2020</time> &middot; 8 min read
+  </div>
+
+  <h1 id="content">Content</h1>
+<ul>
+<li><a href="#malaria-deaths-by-country">Malaria deaths by country</a></li>
+<li><a href="#malaria-deaths-by-age">Malaria deaths by age</a></li>
+<li><a href="#malaria-incidence-by-country">Malaria incidence by country</a></li>
+<li><a href="#link-to-github-repo">Link to GitHub Repo</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+<h2 id="import-packages-and-get-data">Import packages and get data</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">import</span> matplotlib <span style="color:#f92672">as</span> mpl
+<span style="color:#f92672">from</span> plotnine <span style="color:#f92672">import</span> <span style="color:#f92672">*</span>
+
+url_m_death <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-11-13/malaria_deaths.csv&#34;</span>
+url_m_death_age <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-11-13/malaria_deaths_age.csv&#34;</span>
+url_m_inc <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2018/2018-11-13/malaria_inc.csv&#34;</span>
+m_death <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(url_m_death)
+m_death_age <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(url_m_death_age)
+m_inc <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(url_m_inc)
+
+d <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Deaths - Malaria - Sex: Both - Age: Age-standardized (Rate) (per 100,000 people)&#39;</span>
+m_death <span style="color:#f92672">=</span> m_death<span style="color:#f92672">.</span>rename({d:<span style="color:#e6db74">&#39;Death per 100,000 people&#39;</span>}, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+
+m_death_age <span style="color:#f92672">=</span> m_death_age<span style="color:#f92672">.</span>drop(columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Unnamed: 0&#34;</span>)
+
+i <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Incidence of malaria (per 1,000 population at risk) (per 1,000 population at risk)&#39;</span>
+m_inc <span style="color:#f92672">=</span> m_inc<span style="color:#f92672">.</span>rename({i:<span style="color:#e6db74">&#39;Incidence per 1,000 people&#39;</span>}, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+</code></pre></div><h2 id="malaria-deaths-by-country">Malaria deaths by country</h2>
+<h3 id="analysis1">Analysis1</h3>
+<p>By the fact that most countries malaria death rates are extremely low, we only focus on top 50 countries regarding to death rate each year.</p>
+<p>First we look at the overall malaria deaths condition year by year. We can see that the deaths rate mean is generally descreasing over years (first increasing and then decreasing), indicating that the overall condition is getting better. We can get the same conclusion from quartiles and the min/max of deaths rate.</p>
+<p>Besides average death rate, we also want to know the skewness of death rate over years, which indicating the degree of asymmetry of distribution. We may also curious about the distribution of malaria death rate across countries, and which countries&rsquo; malaria condition is sever.</p>
+<p>I will make four subplots to demonstrate above information:</p>
+<ol>
+<li>The average death rate over years (demonstrate the overall condition over years)</li>
+<li>The distribution of death rate over countries (demonstrate the overall condition over countries)</li>
+<li>The skewness of death rate over years (demonstrate the degree of asymmetry of death rate over years)</li>
+<li>The number of times being in the top10/5 countries regarding of death rate (demonstrate countries that malaria condition is sever)</li>
+</ol>
+<ul>
+<li><a href="#code1">Code</a></li>
+<li><a href="#visualization1">Visualization</a></li>
+</ul>
+<p><a href="#content">return to content</a></p>
+<h3 id="code1">Code1</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">m_death_sub <span style="color:#f92672">=</span> (
+    m_death<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>
+    apply(<span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>sort_values(<span style="color:#e6db74">&#39;Death per 100,000 people&#39;</span>, ascending<span style="color:#f92672">=</span>False))<span style="color:#f92672">.</span>
+    drop(columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>
+    reset_index()<span style="color:#f92672">.</span>
+    drop(columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;level_1&#39;</span>)<span style="color:#f92672">.</span>
+    groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">50</span>)
+)
+
+<span style="color:#75715e"># f1_1 data</span>
+death_mean <span style="color:#f92672">=</span> m_death_sub<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>agg(<span style="color:#e6db74">&#39;mean&#39;</span>)<span style="color:#f92672">.</span>reset_index()
+d_r_q <span style="color:#f92672">=</span> [death_mean<span style="color:#f92672">.</span>iloc[:,<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>quantile(x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> np<span style="color:#f92672">.</span>linspace(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">5</span>)]
+d_r_q[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
+d_r_q[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+death_mean <span style="color:#f92672">=</span> death_mean<span style="color:#f92672">.</span>assign(Severity <span style="color:#f92672">=</span>  pd<span style="color:#f92672">.</span>cut(death_mean<span style="color:#f92672">.</span>iloc[:,<span style="color:#ae81ff">1</span>], d_r_q, labels <span style="color:#f92672">=</span> False))
+
+<span style="color:#75715e"># f1_2 data</span>
+death_distr <span style="color:#f92672">=</span> m_death_sub<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Entity&#39;</span>)<span style="color:#f92672">.</span>agg(<span style="color:#e6db74">&#39;mean&#39;</span>)<span style="color:#f92672">.</span>reset_index()
+
+<span style="color:#75715e"># f1_3 data</span>
+death_skew <span style="color:#f92672">=</span> m_death_sub<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>agg(<span style="color:#e6db74">&#39;skew&#39;</span>)<span style="color:#f92672">.</span>reset_index()<span style="color:#f92672">.</span>rename({<span style="color:#e6db74">&#39;Death per 100,000 people&#39;</span>:<span style="color:#e6db74">&#39;Skewness&#39;</span>}, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+
+<span style="color:#75715e"># f1_4 data</span>
+death_top <span style="color:#f92672">=</span> m_death_sub<span style="color:#f92672">.</span>assign(Rank <span style="color:#f92672">=</span> [x <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">for</span> y <span style="color:#f92672">in</span> range(len(m_death_sub<span style="color:#f92672">.</span>Year<span style="color:#f92672">.</span>unique())) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">50</span>)])
+death_top10 <span style="color:#f92672">=</span> (
+    death_top<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>
+    head(<span style="color:#ae81ff">10</span>)<span style="color:#f92672">.</span>Code<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>to_frame()<span style="color:#f92672">.</span>rename({<span style="color:#e6db74">&#39;Code&#39;</span>:<span style="color:#e6db74">&#39;Top10&#39;</span>}, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+)
+death_top5 <span style="color:#f92672">=</span> (
+    death_top<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>
+    head(<span style="color:#ae81ff">5</span>)<span style="color:#f92672">.</span>Code<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>to_frame()<span style="color:#f92672">.</span>rename({<span style="color:#e6db74">&#39;Code&#39;</span>:<span style="color:#e6db74">&#39;Top5&#39;</span>}, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+)
+death_top <span style="color:#f92672">=</span> (
+    pd<span style="color:#f92672">.</span>merge(death_top5, death_top10, left_index<span style="color:#f92672">=</span>True, right_index <span style="color:#f92672">=</span> True, how <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;right&#39;</span>)<span style="color:#f92672">.</span>fillna(<span style="color:#ae81ff">0</span>)<span style="color:#f92672">.</span>
+    sort_values([<span style="color:#e6db74">&#39;Top5&#39;</span>,<span style="color:#e6db74">&#39;Top10&#39;</span>])
+)
+
+fig1, axes <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">2</span>,figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">10</span>))
+f1_1 <span style="color:#f92672">=</span> death_mean<span style="color:#f92672">.</span>plot(x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Year&#39;</span>, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Death per 100,000 people&#39;</span>, kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;scatter&#39;</span>,
+                title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;1. Top50 average death rate over years&#39;</span>,
+                s <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>, c <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Severity&#39;</span>, colormap <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;viridis&#39;</span>, ax <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>])
+f1_2 <span style="color:#f92672">=</span> death_distr<span style="color:#f92672">.</span>plot(y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Death per 100,000 people&#39;</span>, kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;hist&#39;</span>,
+                 title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;2. Distribution of death rate of top50 countries&#39;</span>, xlim <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">200</span>),
+                 alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>, ax <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>])
+f1_2<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;Number of country&#39;</span>)
+f1_2<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Average death rate for each country from 1990 to 2016 (death per 100,000 people)&#39;</span>)
+f1_3 <span style="color:#f92672">=</span> death_skew<span style="color:#f92672">.</span>plot(x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Year&#39;</span>, y <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Skewness&#39;</span>, kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;scatter&#39;</span>, 
+               title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;3. Top50 skewness of death rate over years&#39;</span>,
+               s <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span>, c <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Skewness&#39;</span>, colormap <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;inferno&#39;</span>, ax <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">0</span>])
+f1_4 <span style="color:#f92672">=</span> death_top<span style="color:#f92672">.</span>plot(y <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Top5&#39;</span>, <span style="color:#e6db74">&#39;Top10&#39;</span>], kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;barh&#39;</span>,
+               title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;4. Countries that malaria death condition are sever&#39;</span>,
+               color <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;#F4A460&#39;</span>, <span style="color:#e6db74">&#39;#B0C4DE&#39;</span>], ax <span style="color:#f92672">=</span> axes[<span style="color:#ae81ff">1</span>][<span style="color:#ae81ff">1</span>])
+f1_4<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;Country code&#39;</span>)
+f1_4<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Times of being in top10/5 death rate countries&#39;</span>)
+</code></pre></div><p><a href="#analysis1">return to analysis</a></p>
+<h3 id="visualization1">Visualization1</h3>
+<p><img src="/images/fig1.png" alt="fig1"></p>
+<p>From plot 1, we can see that the overall condition of death rate caused by malaria is generally getting better over years, while the most sever period is from 2000 to 2005. Plot 2 tells us that the distribution of top50 countries&rsquo; death rate is positively skewed, and plot 3 shows the the degree skewness is getting higher over years, indicating that in mild condition region death rate is decreasing faster than that of in sever condition region, so more effort should be placed in those sever condition region. Plot 4 demonstrates that SLE, BFA are the most sever condition region, countries like GNQ, UGA, BDI etc. are also worth paying attention to.</p>
+<p><a href="#analysis1">return to analysis</a></p>
+<h2 id="malaria-deaths-by-age">Malaria deaths by age</h2>
+<h3 id="analysis2">Analysis2</h3>
+<p>From <code>m_death_age</code> dataset, since the deaths data is recorded in absolute figure so it makes no sense to compare the value between countries (e.g. A country have 100,000 population and 100 deaths, B country have 100,000,000 population and 1000 deaths). However, we can use the data to figure out the structure of malaria deaths by ages.  There are two thing we may curious about: the overall age structure and the changing in age structure by years.</p>
+<p>For the similar reason in visualization 1, I will extract the top50 deaths data for each years and each age group.</p>
+<p>For the first question, we can create violionplot to show how the overall distribution of deaths across different countries and years for each age group. Besides that, I also curious about how it looks like of total deaths for each year in different age group, so I create a boxplot to show that.</p>
+<p>For the second questoin, we may create an area plot which demonstrates the cumulative death for each year with different color in different age groups. It will clearly shows how the deaths structure (i.e. the proportion of death for different age groups) developed over the last 27 years.</p>
+<ul>
+<li><a href="#code2">Code</a></li>
+<li><a href="#visualization2">Visualization</a></li>
+</ul>
+<p><a href="#content">return to content</a></p>
+<h3 id="code2">Code2</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">m_death_age_sub <span style="color:#f92672">=</span> (
+    m_death_age<span style="color:#f92672">.</span>groupby([<span style="color:#e6db74">&#39;year&#39;</span>, <span style="color:#e6db74">&#39;age_group&#39;</span>])<span style="color:#f92672">.</span>
+    apply(<span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>sort_values(<span style="color:#e6db74">&#39;deaths&#39;</span>, ascending<span style="color:#f92672">=</span>False))<span style="color:#f92672">.</span>
+    drop(columns <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;year&#39;</span>, <span style="color:#e6db74">&#39;age_group&#39;</span>])<span style="color:#f92672">.</span>
+    reset_index()<span style="color:#f92672">.</span>
+    drop(columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;level_2&#39;</span>)<span style="color:#f92672">.</span>
+    groupby([<span style="color:#e6db74">&#39;year&#39;</span>, <span style="color:#e6db74">&#39;age_group&#39;</span>])<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">30</span>)
+)
+col_names <span style="color:#f92672">=</span> [x<span style="color:#f92672">.</span>title() <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> m_death_age_sub<span style="color:#f92672">.</span>columns]
+m_death_age_sub<span style="color:#f92672">.</span>columns <span style="color:#f92672">=</span> col_names
+
+<span style="color:#75715e"># f2_1 data</span>
+death_age <span style="color:#f92672">=</span> (
+    m_death_age_sub<span style="color:#f92672">.</span>filter([<span style="color:#e6db74">&#39;Year&#39;</span>,<span style="color:#e6db74">&#39;Deaths&#39;</span>,<span style="color:#e6db74">&#39;Age_Group&#39;</span>])<span style="color:#f92672">.</span>
+    assign(Year_n <span style="color:#f92672">=</span>  m_death_age_sub<span style="color:#f92672">.</span>groupby([<span style="color:#e6db74">&#39;Year&#39;</span>,<span style="color:#e6db74">&#39;Age_Group&#39;</span>])<span style="color:#f92672">.</span>cumcount()<span style="color:#f92672">.</span>astype(<span style="color:#e6db74">&#39;int&#39;</span>))<span style="color:#f92672">.</span>
+    pivot_table(index <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Year&#39;</span>, <span style="color:#e6db74">&#39;Year_n&#39;</span>], columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Age_Group&#39;</span>, values <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Deaths&#39;</span>)<span style="color:#f92672">.</span>
+    reset_index()<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Year&#39;</span>, <span style="color:#e6db74">&#39;Year_n&#39;</span>], axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+)
+death_age<span style="color:#f92672">.</span>index<span style="color:#f92672">.</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;n&#39;</span>
+death_age<span style="color:#f92672">.</span>columns<span style="color:#f92672">.</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Age Group&#39;</span>
+age_group_ordered <span style="color:#f92672">=</span> [death_age<span style="color:#f92672">.</span>columns[x] <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> [<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>]]
+
+death_age_sum <span style="color:#f92672">=</span> (
+    m_death_age_sub<span style="color:#f92672">.</span>filter([<span style="color:#e6db74">&#39;Year&#39;</span>,<span style="color:#e6db74">&#39;Deaths&#39;</span>,<span style="color:#e6db74">&#39;Age_Group&#39;</span>])<span style="color:#f92672">.</span>
+    pivot_table(index <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Year&#39;</span>, columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Age_Group&#39;</span>, values <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Deaths&#39;</span>, aggfunc <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;sum&#39;</span>)
+)
+
+year <span style="color:#f92672">=</span> death_age_sum<span style="color:#f92672">.</span>index
+
+<span style="color:#75715e"># f2_2_1 data</span>
+death_age_cum <span style="color:#f92672">=</span> death_age_sum[age_group_ordered]
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(death_age_cum<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>):
+    death_age_cum<span style="color:#f92672">.</span>iloc[:,i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">+=</span> death_age_cum<span style="color:#f92672">.</span>iloc[:,i] 
+year <span style="color:#f92672">=</span> death_age_cum<span style="color:#f92672">.</span>index
+death_age_cum_ <span style="color:#f92672">=</span> death_age_cum<span style="color:#f92672">.</span>assign(zero <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)
+
+<span style="color:#75715e"># f2_2_2 data</span>
+death_age_prop <span style="color:#f92672">=</span> death_age_sum<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: x <span style="color:#f92672">/</span> sum(x) ,axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+death_age_prop <span style="color:#f92672">=</span> death_age_prop[age_group_ordered]
+
+fig2 <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>figure(<span style="color:#ae81ff">2</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">12</span>))
+
+f2_1 <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>)
+plt<span style="color:#f92672">.</span>violinplot([death_age[x] <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> age_group_ordered],
+               showmedians<span style="color:#f92672">=</span>True, vert <span style="color:#f92672">=</span> False)
+plt<span style="color:#f92672">.</span>boxplot([death_age_sum[x] <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> age_group_ordered],
+            labels <span style="color:#f92672">=</span> age_group_ordered, vert <span style="color:#f92672">=</span> False)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;1. Top50 deaths for each age groups each year</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">s violion plot</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">and yearly total deaths for each each age group</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">s boxplot&#39;</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Number of deaths&#39;</span>)
+plt<span style="color:#f92672">.</span>xscale(<span style="color:#e6db74">&#39;log&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Age Group&#39;</span>)
+plt<span style="color:#f92672">.</span>grid(b <span style="color:#f92672">=</span> True, axis <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;both&#39;</span>)
+
+f2_2_1 <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>)
+color1 <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;#FF6347&#39;</span>, <span style="color:#e6db74">&#39;#FFA500&#39;</span>, <span style="color:#e6db74">&#39;#FFD700&#39;</span>, <span style="color:#e6db74">&#39;#FFFF00&#39;</span>, <span style="color:#e6db74">&#39;#ACFCE1&#39;</span>]
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(death_age_cum_<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>):
+    plt<span style="color:#f92672">.</span>fill_between(x <span style="color:#f92672">=</span> year, y1 <span style="color:#f92672">=</span> death_age_cum_<span style="color:#f92672">.</span>iloc[:,i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>], y2 <span style="color:#f92672">=</span> death_age_cum_<span style="color:#f92672">.</span>iloc[:,i], color <span style="color:#f92672">=</span> color1[i],
+                    label <span style="color:#f92672">=</span> age_group_ordered[i])
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;2. Top50 total malaria deaths over years by different age group&#39;</span>)
+plt<span style="color:#f92672">.</span>xlim(left <span style="color:#f92672">=</span> <span style="color:#ae81ff">1990</span>, right <span style="color:#f92672">=</span> <span style="color:#ae81ff">2016</span>)
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;Year&#39;</span>)
+plt<span style="color:#f92672">.</span>ylim(bottom <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Number of deaths&#39;</span>)
+plt<span style="color:#f92672">.</span>yticks(np<span style="color:#f92672">.</span>linspace(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">5</span><span style="color:#f92672">*</span><span style="color:#ae81ff">1e6</span>, <span style="color:#ae81ff">9</span>))
+plt<span style="color:#f92672">.</span>grid(b <span style="color:#f92672">=</span> True, axis <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;both&#39;</span>, alpha <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>)
+plt<span style="color:#f92672">.</span>legend(loc <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;upper right&#39;</span>, bbox_to_anchor<span style="color:#f92672">=</span>(<span style="color:#ae81ff">0.7</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>))
+
+f2_2_2 <span style="color:#f92672">=</span> f2_2_1<span style="color:#f92672">.</span>twinx()
+color2 <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;#B22222&#39;</span>, <span style="color:#e6db74">&#39;#FFD700&#39;</span>, <span style="color:#e6db74">&#39;#00FF00&#39;</span>, <span style="color:#e6db74">&#39;#00FFFF&#39;</span>, <span style="color:#e6db74">&#39;#FFC0CB&#39;</span>]
+<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(death_age_prop<span style="color:#f92672">.</span>shape[<span style="color:#ae81ff">1</span>]):
+    plt<span style="color:#f92672">.</span>plot(death_age_prop<span style="color:#f92672">.</span>iloc[:,i], label <span style="color:#f92672">=</span> age_group_ordered[i], c <span style="color:#f92672">=</span> color2[i])
+plt<span style="color:#f92672">.</span>ylim(bottom <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Prop of deaths&#39;</span>)
+plt<span style="color:#f92672">.</span>legend(loc <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;lower right&#39;</span>, bbox_to_anchor<span style="color:#f92672">=</span>(<span style="color:#ae81ff">0.7</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.5</span>))
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><a href="#analysis2">return to analysis</a></p>
+<h3 id="visualization2">Visualization2</h3>
+<p><img src="/images/fig2.png" alt="fig2"></p>
+<p>From the plot 1 we can easily tell that the people under 5 was the main part of deaths caused by malaria, and the deaths number decrease as age grows. Thouhg it is not robust to make the conclusion that malaria is less danger to older people than to younger people, since age groups&rsquo; population vary, it is clear that we should care more about children under 5 years when facing malaria.</p>
+<p>From the plot 2 we can see that the gerenal trend of total deaths of malaria is going up and then going down, and the propotion of deaths for under 5 year group is decreasing over years, while the proportion of deaths for 15 - 49 years group is slowly increasing, indicating that after years endeavor, children under 5&rsquo;s condition is getting better.</p>
+<p><a href="#analysis2">return to analysis</a></p>
+<h2 id="malaria-incidence-by-country">Malaria incidence by country</h2>
+<h3 id="analysis3">Analysis3</h3>
+<p>This dataset&rsquo;s structure is similar to the fisrt dataset, with less content and the deaths rate being replaced by incidence rate. So I would like to focus on trying to use <code>theme_xkcd()</code> in <code>plotnine</code> to make the plot cooler.</p>
+<p>As before, we first subset the dataset to keep only significant value. In this visualization, I would like to make a density plot to show the distribution of incidence rate for 4 years.</p>
+<ul>
+<li><a href="#code3">Code</a></li>
+<li><a href="#visualization3">Visualization</a></li>
+</ul>
+<p><a href="#content">return to content</a></p>
+<h3 id="code3">Code3</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">m_inc_sub <span style="color:#f92672">=</span> (
+    m_inc<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>
+    apply(<span style="color:#66d9ef">lambda</span> x: x<span style="color:#f92672">.</span>sort_values(<span style="color:#e6db74">&#39;Incidence per 1,000 people&#39;</span>, ascending<span style="color:#f92672">=</span>False))<span style="color:#f92672">.</span>
+    drop(columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>
+    reset_index()<span style="color:#f92672">.</span>
+    drop(columns <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;level_1&#39;</span>)<span style="color:#f92672">.</span>
+    groupby(<span style="color:#e6db74">&#39;Year&#39;</span>)<span style="color:#f92672">.</span>head(<span style="color:#ae81ff">50</span>)
+)
+
+inc_distr <span style="color:#f92672">=</span> m_inc_sub
+
+fig3 <span style="color:#f92672">=</span> (
+    ggplot(inc_distr, aes(x <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Incidence per 1,000 people&#39;</span>, color <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Year&#39;</span>, fill <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Year&#39;</span>)) <span style="color:#f92672">+</span>
+    geom_density() <span style="color:#f92672">+</span>
+    facet_wrap(<span style="color:#e6db74">&#39;~Year&#39;</span>, <span style="color:#ae81ff">4</span>) <span style="color:#f92672">+</span>
+    scale_x_continuous(limits <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1000</span>)) <span style="color:#f92672">+</span>
+    labs(title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Density of incidence rate in different years&#39;</span>) <span style="color:#f92672">+</span>
+    theme_xkcd()
+)
+</code></pre></div><p><a href="#analysis3">return to analysis</a></p>
+<h3 id="visualization3">Visualization3</h3>
+<p><img src="/images/fig3.png" alt="fig3"></p>
+<p>As shown above, we can see that from 2000 to 2015, the incidence rate is generally decreasing: in 2000, the highest density is around 500, while in 2015, the highest density is below 250. So we can say that the risk of being inffected by malaria is overall reduced.</p>
+<p><a href="#analysis3">return to analysis</a></p>
+<p>🎉🎉🎉</p>
+<h2 id="link-to-github-repo">Link to GitHub Repo</h2>
+<p><a href="https://github.com/yuehan857/malaria_visualization.git">https://github.com/yuehan857/malaria_visualization.git</a></p>
+<h2 id="reference">Reference</h2>
+<ol>
+<li><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html">https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html</a></li>
+<li><a href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure">https://matplotlib.org/api/_as_gen/matplotlib.pyplot.figure.html#matplotlib.pyplot.figure</a></li>
+<li><a href="https://plotnine.readthedocs.io/en/stable/api.html">https://plotnine.readthedocs.io/en/stable/api.html</a></li>
+</ol>
+</div>
+
+
+  </main>
+
+  <footer>
+  <div>
+    &copy; Yue Han 2020
+
+    &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
+
+    
+  </div>
+</footer>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\[','\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: {
+                equationNumbers: { autoNumber: "AMS" },
+                extensions: ["AMSmath.js", "AMSsymbols.js"]
+            }
+        }
+    });
+</script>
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
+          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
+          crossorigin="anonymous"></script>
+
+  <script src="/js/blog.js"></script>
+
+  
+</body>
+</html>

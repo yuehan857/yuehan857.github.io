@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mongodb on Yue Han</title>
+    <link>https://yuehan857.github.io/tags/mongodb/</link>
+    <description>Recent content in Mongodb on Yue Han</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 22 Oct 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://yuehan857.github.io/tags/mongodb/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>HW5: Star Wars People Query: Who is the Oldest One?</title>
+      <link>https://yuehan857.github.io/posts/star_war_people/</link>
+      <pubDate>Thu, 22 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://yuehan857.github.io/posts/star_war_people/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

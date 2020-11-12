@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  <title>HW5: Star Wars People Query: Who is the Oldest One? &middot; Yue Han</title>
+
+  <meta name="description" content="" />
+
+  
+
+<meta itemprop="name" content="HW5: Star Wars People Query: Who is the Oldest One?">
+<meta itemprop="description" content="">
+<meta itemprop="datePublished" content="2020-10-22T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-10-22T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1235">
+
+
+
+<meta itemprop="keywords" content="Python,Mongodb," />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HW5: Star Wars People Query: Who is the Oldest One?"/>
+<meta name="twitter:description" content=""/>
+
+
+<meta property="og:title" content="HW5: Star Wars People Query: Who is the Oldest One?" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuehan857.github.io/posts/star_war_people/" />
+<meta property="article:published_time" content="2020-10-22T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-10-22T00:00:00+00:00" />
+
+
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/print.css"
+        media="print">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/poole.css">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/hyde.css">
+
+  
+<style type="text/css">
+  .sidebar {
+    background-color: #749aad;
+  }
+
+  .read-more-link a {
+    border-color: #749aad;
+  }
+
+  .pagination li a {
+    color: #749aad;
+    border: 1px solid #749aad;
+  }
+
+  .pagination li.active a {
+    background-color: #749aad;
+  }
+
+  .pagination li a:hover {
+    background-color: #749aad;
+    opacity: 0.75;
+  }
+
+  footer a,
+  .content a,
+  .related-posts li a:hover {
+    color: #749aad;
+  }
+</style>
+
+
+
+  <link type="text/css" rel="stylesheet" href="/css/blog.css">
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+        crossorigin="anonymous" />
+
+  <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  </head>
+<body>
+  <aside class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      
+        
+        <div class="author-image">
+          <img src="/images/profile.png" class="img-circle img-headshot center" alt="Profile Picture">
+        </div>
+        
+      
+
+      <h1>Yue Han</h1>
+
+      
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="https://yuehan857.github.io/">Home</a>
+        </li>
+        <li>
+          <a href="/posts/">Posts</a>
+        </li><li>
+          <a href="/categories/">Categories</a>
+        </li><li>
+          <a href="/tags/">Tags</a>
+        </li><li>
+          <a href="/about/">About</a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="social-icons">
+      
+      <a href="https://www.linkedin.com/public-profile/in/yue-han-339482154" rel="me" title="Linkedin" target="_blank">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://github.com/yuehan857" rel="me" title="GitHub" target="_blank">
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </a>
+      
+    </section>
+  </div>
+</aside>
+
+
+  <main class="content container">
+  <div class="post">
+  <h1>HW5: Star Wars People Query: Who is the Oldest One?</h1>
+
+  <div class="post-date">
+    <time datetime="2020-10-22T00:00:00Z">Oct 22, 2020</time> &middot; 6 min read
+  </div>
+
+  <h1 id="star-wars-universe">Star Wars Universe</h1>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/tGsKzZtRwxw" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<h2 id="introduction">Introduction</h2>
+<blockquote>
+<p><strong>Star Wars</strong> is a science-fiction franchise comprising movies, books, comics, video games, toys, live action shows, and animated shows. It is a fictional universe created by George Lucas. The Star Wars story employs archetypal motifs common to science fiction, political climax and classical mythology, as well as musical motifs of those aspects.</p>
+</blockquote>
+<p>source: <a href="https://starwars.fandom.com/wiki/Star_Wars">https://starwars.fandom.com/wiki/Star_Wars</a></p>
+<h2 id="characters-in-star-wars-universe">Characters in Star Wars Universe</h2>
+<p>We can query data from  <a href="https://swapi.dev/documentation">Star Wars API</a>. To download all people data set, we can use <code>people</code> resource.</p>
+<p>According to the document, we can query all people data in one page or only one people data each time:</p>
+<blockquote>
+<p>Endpoints</p>
+<ul>
+<li><code>/people/</code> &ndash; get all the people resources</li>
+<li><code>/people/:id/</code> &ndash; get a specific people resource</li>
+</ul>
+</blockquote>
+<p>Each people data has several attributes, and we are interested in the following:</p>
+<blockquote>
+<p>Attributes:</p>
+<ul>
+<li><code>/name/</code> string &ndash; The name of this person.</li>
+<li><code>birth_year</code> string &ndash; The birth year of the person, using the in-universe standard of BBY or ABY - Before the Battle of Yavin or After the Battle of Yavin. The Battle of Yavin is a battle that occurs at the end of Star Wars episode IV: A New Hope.</li>
+<li><code>films</code> array &ndash; An array of film resource URLs that this person has been in.</li>
+<li><code>species</code> array &ndash; An array of species resource URLs that this person belongs to.</li>
+</ul>
+</blockquote>
+<p>Now we can query people data of star wars universe using the following code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> requests
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+
+base_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://swapi.dev/api/people/?page=&#39;</span>
+i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+people <span style="color:#f92672">=</span> []
+url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join([base_url, str(i)])
+request <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json()
+<span style="color:#66d9ef">while</span> <span style="color:#e6db74">&#39;results&#39;</span> <span style="color:#f92672">in</span> request:
+    people <span style="color:#f92672">+=</span> request[<span style="color:#e6db74">&#39;results&#39;</span>]
+    i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join([base_url, str(i)])
+    request <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json() 
+</code></pre></div><pre><code>&gt;&gt;&gt; people[0]
+{'name': 'Luke Skywalker',
+ 'height': '172',
+ 'mass': '77',
+ 'hair_color': 'blond',
+ 'skin_color': 'fair',
+ 'eye_color': 'blue',
+ 'birth_year': '19BBY',
+ 'gender': 'male',
+ 'homeworld': 'http://swapi.dev/api/planets/1/',
+ 'films': ['http://swapi.dev/api/films/1/',
+  'http://swapi.dev/api/films/2/',
+  'http://swapi.dev/api/films/3/',
+  'http://swapi.dev/api/films/6/'],
+ 'species': [],
+ 'vehicles': ['http://swapi.dev/api/vehicles/14/',
+  'http://swapi.dev/api/vehicles/30/'],
+ 'starships': ['http://swapi.dev/api/starships/12/',
+  'http://swapi.dev/api/starships/22/'],
+ 'created': '2014-12-09T13:50:51.644000Z',
+ 'edited': '2014-12-20T21:17:56.891000Z',
+ 'url': 'http://swapi.dev/api/people/1/'}
+ &gt;&gt;&gt; len(people)
+ 82
+</code></pre><h2 id="find-the-oldest-character">Find the Oldest Character</h2>
+<p>We want to find the name of the oldest person (or robot or alien) and list the titles of all the films they appeared in. To find this information, we can use <code>birth_year</code> attribute. No death_year attribute, so we assume they are all alive. To find the oldest one, we just need to find the one that was borned earliest.</p>
+<blockquote>
+<p><strong>BBY</strong>: The battle has become known as the Battle of Yavin, and its date is used as a place-marker for events in the expanded Star Wars universe. Events before the Battle of Yavin are marked by BBY (&ldquo;Before the Battle of Yavin&rdquo;), and events that occur after are marked by ABY (&ldquo;After the Battle of Yavin&rdquo;)</p>
+</blockquote>
+<p>Also I notice that in <code>species</code> resource, there is an attribute <code>average_lifespan</code>, so I would also select the character whose species has the longest average lifespan.</p>
+<p>It is straightforward to think of  <code>MongoDB</code> to query the data since as shown above, the data is in <code>JSON</code> format. Also we can transform the data into dataframe using <code>pandas.json_normalize()</code></p>
+<h3 id="use-pandas">Use <code>Pandas</code></h3>
+<ul>
+<li>By <code>birth_year</code></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># some columns values are array, so we store them in separate dataframe</span>
+multiple_entries_col <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;films&#39;</span>, <span style="color:#e6db74">&#39;vehicles&#39;</span>, <span style="color:#e6db74">&#39;starships&#39;</span>]
+people_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>json_normalize(people)<span style="color:#f92672">.</span>drop(columns <span style="color:#f92672">=</span> multiple_entries_col)
+
+<span style="color:#75715e"># species is a list with either 0 or 1 element, so we flatten it to a string</span>
+people_df[<span style="color:#e6db74">&#39;species&#39;</span>] <span style="color:#f92672">=</span> people_df[<span style="color:#e6db74">&#39;species&#39;</span>]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: <span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(x) <span style="color:#66d9ef">if</span> len(x) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#39;n/a&#39;</span>)
+
+<span style="color:#75715e"># store people&#39;s name with corresponding films</span>
+film_name <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>json_normalize(people, <span style="color:#e6db74">&#39;films&#39;</span>, [<span style="color:#e6db74">&#39;name&#39;</span>])<span style="color:#f92672">.</span>rename(columns <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>:<span style="color:#e6db74">&#39;films&#39;</span>})
+
+<span style="color:#75715e"># merge people basic info data with people film data</span>
+people_film_df <span style="color:#f92672">=</span> people_df<span style="color:#f92672">.</span>merge(film_name)
+
+<span style="color:#75715e"># transform birth year into float</span>
+people_film_df[<span style="color:#e6db74">&#39;birth_year&#39;</span>] <span style="color:#f92672">=</span> people_film_df[<span style="color:#e6db74">&#39;birth_year&#39;</span>]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: float(x[:<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>]) <span style="color:#66d9ef">if</span> x <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;unknown&#39;</span> <span style="color:#66d9ef">else</span> np<span style="color:#f92672">.</span>nan)
+
+<span style="color:#75715e"># find people who was borned earliest</span>
+people_film_df<span style="color:#f92672">.</span>nlargest(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;birth_year&#39;</span>)
+
+<span style="color:#75715e"># find the films of oldest people</span>
+oldest_people_films <span style="color:#f92672">=</span> list(people_film_df[people_film_df<span style="color:#f92672">.</span>name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Yoda&#39;</span>]<span style="color:#f92672">.</span>films)
+</code></pre></div><pre><code>&gt;&gt;&gt;people_film_df.nlargest(1, 'birth_year').name
+58    Yoda
+Name: name, dtype: object
+&gt;&gt;&gt;[requests.get(url).json()['title'] for url in oldest_people_films]
+['The Empire Strikes Back',
+ 'Return of the Jedi',
+ 'The Phantom Menace',
+ 'Attack of the Clones',
+ 'Revenge of the Sith']
+</code></pre><ul>
+<li>By <code>average_lifespan</code></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># get speices data</span>
+base_url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;http://swapi.dev/api/species/?page=&#39;</span>
+i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+species <span style="color:#f92672">=</span> []
+url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join([base_url, str(i)])
+request <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json()
+<span style="color:#66d9ef">while</span> <span style="color:#e6db74">&#39;results&#39;</span> <span style="color:#f92672">in</span> request:
+    species <span style="color:#f92672">+=</span> request[<span style="color:#e6db74">&#39;results&#39;</span>]
+    i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join([base_url, str(i)])
+    request <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json() 
+</code></pre></div><pre><code>&gt;&gt;&gt;species[0]
+{'name': 'Human',
+ 'classification': 'mammal',
+ 'designation': 'sentient',
+ 'average_height': '180',
+ 'skin_colors': 'caucasian, black, asian, hispanic',
+ 'hair_colors': 'blonde, brown, black, red',
+ 'eye_colors': 'brown, blue, green, hazel, grey, amber',
+ 'average_lifespan': '120',
+ 'homeworld': 'http://swapi.dev/api/planets/9/',
+ 'language': 'Galactic Basic',
+ 'people': ['http://swapi.dev/api/people/66/',
+  'http://swapi.dev/api/people/67/',
+  'http://swapi.dev/api/people/68/',
+  'http://swapi.dev/api/people/74/'],
+ 'films': ['http://swapi.dev/api/films/1/',
+  'http://swapi.dev/api/films/2/',
+  'http://swapi.dev/api/films/3/',
+  'http://swapi.dev/api/films/4/',
+  'http://swapi.dev/api/films/5/',
+  'http://swapi.dev/api/films/6/'],
+ 'created': '2014-12-10T13:52:11.567000Z',
+ 'edited': '2014-12-20T21:36:42.136000Z',
+ 'url': 'http://swapi.dev/api/species/1/'}
+&gt;&gt;&gt;len(species)
+37
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># some columns values are array, so we store them in separate dataframe</span>
+species_df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>json_normalize(species)<span style="color:#f92672">.</span>drop(columns <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;people&#39;</span>, <span style="color:#e6db74">&#39;films&#39;</span>])
+species_df[<span style="color:#e6db74">&#39;average_lifespan&#39;</span>] <span style="color:#f92672">=</span> (
+    species_df[<span style="color:#e6db74">&#39;average_lifespan&#39;</span>]<span style="color:#f92672">.</span>
+    apply(<span style="color:#66d9ef">lambda</span> x: float(x) <span style="color:#66d9ef">if</span> x <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#39;indefinite&#39;</span>, <span style="color:#e6db74">&#39;unknown&#39;</span>] <span style="color:#66d9ef">else</span> np<span style="color:#f92672">.</span>nan)
+)
+
+<span style="color:#75715e"># store dataframe of species corresponding people and films</span>
+people_species <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>json_normalize(species, <span style="color:#e6db74">&#39;people&#39;</span>, [<span style="color:#e6db74">&#39;name&#39;</span>])<span style="color:#f92672">.</span>rename(columns <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>:<span style="color:#e6db74">&#39;people&#39;</span>})
+film_species <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>json_normalize(species, <span style="color:#e6db74">&#39;films&#39;</span>, [<span style="color:#e6db74">&#39;name&#39;</span>])<span style="color:#f92672">.</span>rename(columns <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>:<span style="color:#e6db74">&#39;films&#39;</span>})
+
+<span style="color:#75715e"># find species with longest average lifespan</span>
+species_df<span style="color:#f92672">.</span>nlargest(<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;average_lifespan&#39;</span>)
+
+<span style="color:#75715e"># find corresponding people and films</span>
+p <span style="color:#f92672">=</span> (people_species[people_species<span style="color:#f92672">.</span>name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Hutt&#39;</span>]<span style="color:#f92672">.</span>people)
+p_name <span style="color:#f92672">=</span> [requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#39;name&#39;</span>] <span style="color:#66d9ef">for</span> url <span style="color:#f92672">in</span> p]
+f <span style="color:#f92672">=</span> list(film_species[film_species<span style="color:#f92672">.</span>name <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;Hutt&#39;</span>]<span style="color:#f92672">.</span>films)
+f_title <span style="color:#f92672">=</span> [requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json()[<span style="color:#e6db74">&#39;title&#39;</span>] <span style="color:#66d9ef">for</span> url <span style="color:#f92672">in</span> f]
+</code></pre></div><pre><code>&gt;&gt;&gt;p_name
+['Jabba Desilijic Tiure']
+&gt;&gt;&gt;f_title
+['A New Hope', 'Return of the Jedi']
+</code></pre><h3 id="use-mongodb">Use <code>MongoDB</code></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># setup</span>
+<span style="color:#f92672">from</span> pymongo <span style="color:#f92672">import</span> MongoClient
+client <span style="color:#f92672">=</span> MongoClient(<span style="color:#e6db74">&#39;mongodb:27017&#39;</span>)
+client<span style="color:#f92672">.</span>drop_database(<span style="color:#e6db74">&#39;starwars&#39;</span>)
+db <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span>starwars
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># make json nested and trim data</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_nested</span>(d):
+    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join(d[<span style="color:#e6db74">&#39;species&#39;</span>])
+    <span style="color:#66d9ef">if</span> len(url) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+        d[<span style="color:#e6db74">&#39;species&#39;</span>] <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json()
+    <span style="color:#66d9ef">else</span>:
+        d[<span style="color:#e6db74">&#39;species&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+        
+    urls <span style="color:#f92672">=</span> d[<span style="color:#e6db74">&#39;films&#39;</span>]
+    <span style="color:#66d9ef">if</span> len(urls) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+        d[<span style="color:#e6db74">&#39;films&#39;</span>] <span style="color:#f92672">=</span> [requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>json() <span style="color:#66d9ef">for</span> url <span style="color:#f92672">in</span> urls]
+    <span style="color:#66d9ef">else</span>:
+        d[<span style="color:#e6db74">&#39;films&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+    
+    <span style="color:#66d9ef">return</span> d
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">trim_data</span>(d):
+    <span style="color:#75715e"># keep only film title</span>
+    <span style="color:#66d9ef">if</span> len(d[<span style="color:#e6db74">&#39;films&#39;</span>]) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>:
+        d[<span style="color:#e6db74">&#39;films_titles&#39;</span>] <span style="color:#f92672">=</span> [d[<span style="color:#e6db74">&#39;films&#39;</span>][i][<span style="color:#e6db74">&#39;title&#39;</span>] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(len(d[<span style="color:#e6db74">&#39;films&#39;</span>]))]
+    d[<span style="color:#e6db74">&#39;films&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+    
+    <span style="color:#75715e"># transform birth year to float</span>
+    <span style="color:#66d9ef">if</span> d[<span style="color:#e6db74">&#39;birth_year&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;unknown&#39;</span>:
+        d[<span style="color:#e6db74">&#39;b_year&#39;</span>] <span style="color:#f92672">=</span> float(d[<span style="color:#e6db74">&#39;birth_year&#39;</span>][:<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>])
+        
+    <span style="color:#75715e"># transform avg lifespan of species to float</span>
+    <span style="color:#66d9ef">if</span> d[<span style="color:#e6db74">&#39;species&#39;</span>] <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;&#39;</span>:
+        <span style="color:#66d9ef">if</span> d[<span style="color:#e6db74">&#39;species&#39;</span>][<span style="color:#e6db74">&#39;average_lifespan&#39;</span>] <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> [<span style="color:#e6db74">&#39;unknown&#39;</span>, <span style="color:#e6db74">&#39;indefinite&#39;</span>]:
+            d[<span style="color:#e6db74">&#39;avg_lifespan&#39;</span>] <span style="color:#f92672">=</span> float(d[<span style="color:#e6db74">&#39;species&#39;</span>][<span style="color:#e6db74">&#39;average_lifespan&#39;</span>])
+    d[<span style="color:#e6db74">&#39;species&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+    
+    <span style="color:#66d9ef">return</span> d
+</code></pre></div><pre><code>&gt;&gt;&gt;[trim_data(get_nested(p)) for p in people]
+&gt;&gt;&gt;people[0]
+{'name': 'Luke Skywalker',
+ 'height': '172',
+ 'mass': '77',
+ 'hair_color': 'blond',
+ 'skin_color': 'fair',
+ 'eye_color': 'blue',
+ 'birth_year': '19BBY',
+ 'gender': 'male',
+ 'homeworld': 'http://swapi.dev/api/planets/1/',
+ 'films': '',
+ 'species': '',
+ 'vehicles': ['http://swapi.dev/api/vehicles/14/',
+  'http://swapi.dev/api/vehicles/30/'],
+ 'starships': ['http://swapi.dev/api/starships/12/',
+  'http://swapi.dev/api/starships/22/'],
+ 'created': '2014-12-09T13:50:51.644000Z',
+ 'edited': '2014-12-20T21:17:56.891000Z',
+ 'url': 'http://swapi.dev/api/people/1/',
+ 'films_titles': ['A New Hope',
+  'The Empire Strikes Back',
+  'Return of the Jedi',
+  'Revenge of the Sith'],
+ 'b_year': 19.0}
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># store data into people_ collection</span>
+people_ <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>people_
+result <span style="color:#f92672">=</span> people_<span style="color:#f92672">.</span>insert_many(people)
+</code></pre></div><ul>
+<li>By <code>birth_year</code></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> people_<span style="color:#f92672">.</span>find(
+    <span style="color:#75715e"># search criteria</span>
+    {},
+    <span style="color:#75715e"># values to return</span>
+    {<span style="color:#e6db74">&#39;_id&#39;</span>: False,
+     <span style="color:#e6db74">&#39;name&#39;</span>: True, 
+     <span style="color:#e6db74">&#39;films_titles&#39;</span>: True
+    }
+)<span style="color:#f92672">.</span>sort(<span style="color:#e6db74">&#39;b_year&#39;</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>limit(<span style="color:#ae81ff">1</span>):
+    <span style="color:#66d9ef">print</span>(x)
+</code></pre></div><pre><code>{'name': 'Yoda', 'films_titles': ['The Empire Strikes Back', 'Return of the Jedi', 'The Phantom Menace', 'Attack of the Clones', 'Revenge of the Sith']}
+</code></pre><ul>
+<li>By <code>average_lifespan</code></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> people_<span style="color:#f92672">.</span>find(
+    <span style="color:#75715e"># search criteria</span>
+    {},
+    <span style="color:#75715e"># values to return</span>
+    {<span style="color:#e6db74">&#39;_id&#39;</span>: False,
+     <span style="color:#e6db74">&#39;name&#39;</span>: True, 
+     <span style="color:#e6db74">&#39;films_titles&#39;</span>: True
+    }
+)<span style="color:#f92672">.</span>sort(<span style="color:#e6db74">&#39;avg_lifespan&#39;</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>limit(<span style="color:#ae81ff">1</span>):
+    <span style="color:#66d9ef">print</span>(x)
+</code></pre></div><pre><code>{'name': 'Jabba Desilijic Tiure', 'films_titles': ['A New Hope', 'Return of the Jedi', 'The Phantom Menace']}
+</code></pre><h2 id="who-are-they">Who are they?</h2>
+<h3 id="yoda">Yoda</h3>
+<p><img src="/images/Yoda.png" alt=""></p>
+<blockquote>
+<p>Yoda was a legendary Jedi Master and stronger than most in his connection with the Force. Small in size but wise and powerful, he trained Jedi for over 800 years, playing integral roles in the Clone Wars, the instruction of Luke Skywalker, and unlocking the path to immortality.</p>
+</blockquote>
+<p>source: <a href="https://www.starwars.com/databank/yoda">https://www.starwars.com/databank/yoda</a></p>
+<h3 id="jabba">Jabba</h3>
+<p><img src="/images/Jabba.png" alt=""></p>
+<blockquote>
+<p>Jabba the Hutt was one of the galaxy’s most powerful gangsters, with far-reaching influence in both politics and the criminal underworld. There were no second chances with Jabba, something Han Solo would find out &ndash; though the slug-like alien would ultimately fall victim to his own hubris and vengeful ways.</p>
+</blockquote>
+<p>source: <a href="https://www.starwars.com/databank/jabba-the-hutt">https://www.starwars.com/databank/jabba-the-hutt</a></p>
+<h2 id="github-repo">GitHub repo:</h2>
+<p><a href="https://github.com/yuehan857/star_war_query">https://github.com/yuehan857/star_war_query</a></p>
+<h2 id="reference">Reference:</h2>
+<ol>
+<li><a href="https://www.starwars.com">https://www.starwars.com</a></li>
+<li><a href="https://starwars.fandom.com/wiki/Star_Wars">https://starwars.fandom.com/wiki/Star_Wars</a></li>
+</ol>
+</div>
+
+
+  </main>
+
+  <footer>
+  <div>
+    &copy; Yue Han 2020
+
+    &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
+
+    
+  </div>
+</footer>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\[','\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: {
+                equationNumbers: { autoNumber: "AMS" },
+                extensions: ["AMSmath.js", "AMSsymbols.js"]
+            }
+        }
+    });
+</script>
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
+          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
+          crossorigin="anonymous"></script>
+
+  <script src="/js/blog.js"></script>
+
+  
+</body>
+</html>

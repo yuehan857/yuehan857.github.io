@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  <title>HW4: Spotify song normalization and SQL query &middot; Yue Han</title>
+
+  <meta name="description" content="" />
+
+  
+
+<meta itemprop="name" content="HW4: Spotify song normalization and SQL query">
+<meta itemprop="description" content="">
+<meta itemprop="datePublished" content="2020-10-08T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-10-08T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1613">
+
+
+
+<meta itemprop="keywords" content="Python,SQL,Database," />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HW4: Spotify song normalization and SQL query"/>
+<meta name="twitter:description" content=""/>
+
+
+<meta property="og:title" content="HW4: Spotify song normalization and SQL query" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuehan857.github.io/posts/spotify_song_normalization/" />
+<meta property="article:published_time" content="2020-10-08T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-10-08T00:00:00+00:00" />
+
+
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/print.css"
+        media="print">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/poole.css">
+
+  <link type="text/css"
+        rel="stylesheet"
+        href="/css/hyde.css">
+
+  
+<style type="text/css">
+  .sidebar {
+    background-color: #749aad;
+  }
+
+  .read-more-link a {
+    border-color: #749aad;
+  }
+
+  .pagination li a {
+    color: #749aad;
+    border: 1px solid #749aad;
+  }
+
+  .pagination li.active a {
+    background-color: #749aad;
+  }
+
+  .pagination li a:hover {
+    background-color: #749aad;
+    opacity: 0.75;
+  }
+
+  footer a,
+  .content a,
+  .related-posts li a:hover {
+    color: #749aad;
+  }
+</style>
+
+
+
+  <link type="text/css" rel="stylesheet" href="/css/blog.css">
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700&display=swap">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+        crossorigin="anonymous" />
+
+  <link rel="apple-touch-icon-precomposed"
+        sizes="144x144"
+        href="/apple-touch-icon-144-precomposed.png">
+
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  </head>
+<body>
+  <aside class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      
+        
+        <div class="author-image">
+          <img src="/images/profile.png" class="img-circle img-headshot center" alt="Profile Picture">
+        </div>
+        
+      
+
+      <h1>Yue Han</h1>
+
+      
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="https://yuehan857.github.io/">Home</a>
+        </li>
+        <li>
+          <a href="/posts/">Posts</a>
+        </li><li>
+          <a href="/categories/">Categories</a>
+        </li><li>
+          <a href="/tags/">Tags</a>
+        </li><li>
+          <a href="/about/">About</a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="social-icons">
+      
+      <a href="https://www.linkedin.com/public-profile/in/yue-han-339482154" rel="me" title="Linkedin" target="_blank">
+        <i class="fab fa-linkedin" aria-hidden="true"></i>
+      </a>
+      
+      <a href="https://github.com/yuehan857" rel="me" title="GitHub" target="_blank">
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </a>
+      
+    </section>
+  </div>
+</aside>
+
+
+  <main class="content container">
+  <div class="post">
+  <h1>HW4: Spotify song normalization and SQL query</h1>
+
+  <div class="post-date">
+    <time datetime="2020-10-08T00:00:00Z">Oct 8, 2020</time> &middot; 8 min read
+  </div>
+
+  <h1 id="content">Content</h1>
+<ul>
+<li><a href="#normalization">Normalization</a></li>
+<li><a href="#sql-query">SQL query</a></li>
+<li><a href="#link-to-github-repo">Link to GitHub Repo</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+<h2 id="import-packages-and-get-data">Import packages and get data</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">from</span> sqlalchemy <span style="color:#f92672">import</span> create_engine
+<span style="color:#f92672">from</span> eralchemy <span style="color:#f92672">import</span> render_er
+<span style="color:#f92672">from</span> itertools <span style="color:#f92672">import</span> combinations, permutations
+<span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> csv
+<span style="color:#f92672">import</span> sqlite3
+pd<span style="color:#f92672">.</span>set_option(<span style="color:#e6db74">&#39;display.max_columns&#39;</span>, None) <span style="color:#75715e"># to show all columns in each df</span>
+pd<span style="color:#f92672">.</span>set_option(<span style="color:#e6db74">&#39;display.max_rows&#39;</span>, <span style="color:#ae81ff">100</span>) <span style="color:#75715e"># to show 100 rows in each df</span>
+pd<span style="color:#f92672">.</span>set_option(<span style="color:#e6db74">&#39;max_colwidth&#39;</span>, None) <span style="color:#75715e"># to show all char for each value</span>
+
+url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv&#39;</span>
+ss <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(url)
+</code></pre></div><h2 id="normalization">Normalization</h2>
+<p>To normalize the original dataset to satisfy 3NF, we need to do it step by step from 1NF, 2NF and finally 3NF.</p>
+<ul>
+<li><a href="#1nf">1NF</a></li>
+<li><a href="#2nf">2NF</a></li>
+<li><a href="#3nf">3NF</a></li>
+<li><a href="#save-to-sqlite3-schema">Save to SQLite3 Schema</a></li>
+</ul>
+<p><a href="#content">return to content</a></p>
+<h3 id="1nf">1NF</h3>
+<p>The first normal form (1NF) requires the dataset has no repeating groups of columns and each columns must have a single value.
+By checking each variables, I found that though the variable track_name and variable track_album_name are highly overlapped, but not totally repeated, so the original dataset doesn&rsquo;t violate the 1NF.</p>
+<p><a href="#normalization">return to normalization</a></p>
+<h3 id="2nf">2NF</h3>
+<p>The second normal form (2NF) requires all columns in each row depend fully on candidate keys(include simple and composite key), which means no column depends on the any subset of candiate keys.</p>
+<p>We can check if the dataset conform 2NF by:</p>
+<ul>
+<li>find all possible candidate keys;</li>
+<li>check if other columns depend fully on all possible candidate keys.</li>
+</ul>
+<p>If the dataset not satisfying 2NF, we just split the dataset into different table to make each table conform 2NF. To do so, we just need to:</p>
+<ul>
+<li>put those columns partially depend on candidate keys into new tables with the column(s) in candidate key they depend on;</li>
+<li>create linker tables if needed</li>
+</ul>
+<p>Firstly, we need to find all the candidates keys. Technically, we need to find all possible combination of columns name, but if we do so, it will be extremely time consuming (combinatorial number is very terrible!).</p>
+<p>Fortunately, there are some clue in the columns names. We can find that only the first 11 columns determine the uniqueness of the song, and the rest columns are just attributes of the song.</p>
+<p>Notice that there is no simple candiate keys, but there is a composite key with two columns, and it is the subset of all other possible keys, <strong>which means we have only one candidate key: <code>track_id</code> and <code>playlist_subgenre</code>.</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># select the first 11 columns</span>
+song_unique <span style="color:#f92672">=</span> ss<span style="color:#f92672">.</span>columns[<span style="color:#ae81ff">0</span>:<span style="color:#ae81ff">11</span>]
+
+<span style="color:#75715e"># combinations() find all comb in a given list </span>
+all_comb <span style="color:#f92672">=</span> [list(combinations(song_unique, x)) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">11</span>)]
+all_comb <span style="color:#f92672">=</span> sum(all_comb, []) <span style="color:#75715e"># to flatten the list </span>
+
+<span style="color:#75715e"># the dict that how many duplicated value in each comb of columns</span>
+comb_dup <span style="color:#f92672">=</span> {x:ss<span style="color:#f92672">.</span>loc[:,x]<span style="color:#f92672">.</span>duplicated()<span style="color:#f92672">.</span>sum() <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> all_comb} 
+
+<span style="color:#75715e"># check simple candidate key, which is none</span>
+[k <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> comb_dup<span style="color:#f92672">.</span>items() <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> len(k) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>]
+
+<span style="color:#75715e"># check composite candidate key with length 2, which only one exists (track_id, playlist_subgenre)</span>
+[k <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> comb_dup<span style="color:#f92672">.</span>items() <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> len(k) <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>]
+
+<span style="color:#75715e"># check if there is composite candidate key with length greater than 2 that not contains (track_id, playlist_subgenre)</span>
+<span style="color:#75715e"># no such key</span>
+key_2 <span style="color:#f92672">=</span> [k <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> comb_dup<span style="color:#f92672">.</span>items() <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> len(k) <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>][<span style="color:#ae81ff">0</span>]
+all_possible_key <span style="color:#f92672">=</span> [k <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> comb_dup<span style="color:#f92672">.</span>items() <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]
+[k <span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> all_possible_key <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> set(key_2)<span style="color:#f92672">.</span>issubset(k)]
+</code></pre></div><p>For the second step, since there is only one candiate key and the key is a composite key of two columns, we just need to check if the other columns depend partially on those two columns. To be specific, we just need to check for any rows with same values in columns <code>track_id</code> and <code>playlist_subgenre</code>, if values in other columns unqiue.</p>
+<p>For example, the following means b not depend on a.</p>
+<table>
+<thead>
+<tr>
+<th align="center">a</th>
+<th align="center">b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">$a_1$</td>
+<td align="center">$b_1$</td>
+</tr>
+<tr>
+<td align="center">$a_1$</td>
+<td align="center">$b_2$</td>
+</tr>
+</tbody>
+</table>
+<p>It is helpful to define a <code>check_dependence</code> function.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">check_dependence</span>(df, <span style="color:#f92672">*</span>cols):
+<span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">This function can check the dependence of one column on other columns in a given dataframe.
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">Parameters
+</span><span style="color:#e6db74">----------
+</span><span style="color:#e6db74">df : pandas.DataFrame
+</span><span style="color:#e6db74">    df is a pandas.DataFrame which the columns come from.
+</span><span style="color:#e6db74">cols : str
+</span><span style="color:#e6db74">    The last col argument is the potential dependent, and the previous cols arguments are cols the last col may
+</span><span style="color:#e6db74">    depend on.
+</span><span style="color:#e6db74">    
+</span><span style="color:#e6db74">Returns
+</span><span style="color:#e6db74">-------
+</span><span style="color:#e6db74">bool
+</span><span style="color:#e6db74">    True if the last column depends on the previous columns, False otherwise.
+</span><span style="color:#e6db74">    
+</span><span style="color:#e6db74">Examples
+</span><span style="color:#e6db74">--------
+</span><span style="color:#e6db74">For example, there is a dataframe df which contains columns A, B and C, we want to check if the C depends on A 
+</span><span style="color:#e6db74">and B, we can use this function. Assume C depends on A and B, we should get a True.
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">&gt;&gt;&gt; print(check_dependence(df, A, B, C))
+</span><span style="color:#e6db74">True
+</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+cols_ <span style="color:#f92672">=</span> list(cols[:<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>])
+dep <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>loc[:,cols]<span style="color:#f92672">.</span>groupby(cols_)<span style="color:#f92672">.</span>agg(<span style="color:#e6db74">&#39;nunique&#39;</span>)<span style="color:#f92672">.</span>max()[<span style="color:#ae81ff">0</span>]
+<span style="color:#66d9ef">if</span> dep <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+    <span style="color:#66d9ef">return</span> True
+<span style="color:#66d9ef">else</span>:
+    <span style="color:#66d9ef">return</span> False
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">nonekey_cols <span style="color:#f92672">=</span> list(ss<span style="color:#f92672">.</span>columns)
+nonekey_cols<span style="color:#f92672">.</span>remove(key_2[<span style="color:#ae81ff">0</span>])
+nonekey_cols<span style="color:#f92672">.</span>remove(key_2[<span style="color:#ae81ff">1</span>])
+dep1 <span style="color:#f92672">=</span> {x: check_dependence(ss, key_2[<span style="color:#ae81ff">0</span>], x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> nonekey_cols}
+dep2 <span style="color:#f92672">=</span> {x: check_dependence(ss, key_2[<span style="color:#ae81ff">1</span>], x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> nonekey_cols}
+</code></pre></div><p>The results show that all the <code>track_*</code> columns depend on <code>track_id</code>, and all the music attributions also depend on <code>track_id</code>.  On the other hand, only <code>playlist_genre</code> depends on <code>playlist_subgenre</code>, which also makes perfect sense.</p>
+<p>The above results shows that the dataset does not satisfy 2NF.</p>
+<p>To fix it, we just need to divide the dataset into three sub table:</p>
+<ol>
+<li><code>ss_track</code>: <code>track_id</code> and columns that partially depend on it;</li>
+<li><code>ss_playlist_subgenre</code>: <code>playlist_subgenre</code> and columns that partially depend on it;</li>
+<li><code>ss_main</code>: <code>track_id</code>, <code>playlist_subgenre</code> and other columns that depend fully on these two columns;</li>
+</ol>
+<p>Since we can use <code>ss_main</code> to pin down many to many relationship between <code>ss_track</code>, <code>ss_playlist_genre</code>, no linker table is needed.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># create cols name for each table</span>
+cols_1 <span style="color:#f92672">=</span> [x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> nonekey_cols <span style="color:#66d9ef">if</span> dep1[x]]
+cols_1<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>,key_2[<span style="color:#ae81ff">0</span>])
+
+cols_2 <span style="color:#f92672">=</span> [x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> nonekey_cols <span style="color:#66d9ef">if</span> dep2[x]]
+cols_2<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>,key_2[<span style="color:#ae81ff">1</span>])
+
+cols_3 <span style="color:#f92672">=</span> [x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> nonekey_cols <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span>(dep1[x] <span style="color:#f92672">or</span> dep2[x])]
+cols_3<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">0</span>,key_2[<span style="color:#ae81ff">0</span>])
+cols_3<span style="color:#f92672">.</span>insert(<span style="color:#ae81ff">1</span>,key_2[<span style="color:#ae81ff">1</span>])
+
+<span style="color:#75715e"># create sub tables</span>
+ss_track <span style="color:#f92672">=</span> ss<span style="color:#f92672">.</span>loc[:, cols_1]<span style="color:#f92672">.</span>drop_duplicates()
+ss_playlist_subgenre <span style="color:#f92672">=</span> ss<span style="color:#f92672">.</span>loc[:, cols_2]<span style="color:#f92672">.</span>drop_duplicates()
+ss_main <span style="color:#f92672">=</span> ss<span style="color:#f92672">.</span>loc[:, cols_3]<span style="color:#f92672">.</span>drop_duplicates()
+</code></pre></div><p><a href="#normalization">return to normalization</a></p>
+<h3 id="3nf">3NF</h3>
+<p>The third normal form (3NF) requires no transitive dependence in each table.</p>
+<p>To check this, we need to check the dependence relationship between columns in each tables. Since <code>ss_playlist_subgenre</code> only have two columns, so no transitive dependence exists.</p>
+<h4 id="ss_track"><code>ss_track</code></h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># create combinations of all possible pair which the last col is potential dependent</span>
+track_comb <span style="color:#f92672">=</span> sum([list(combinations(cols_1[:<span style="color:#ae81ff">7</span>], x)) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">8</span>)],[])
+track_comb_ <span style="color:#f92672">=</span> [tuple(sum([list(x),[y]],[])) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> track_comb <span style="color:#66d9ef">for</span> y <span style="color:#f92672">in</span> cols_1 <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> y <span style="color:#f92672">in</span> x]
+
+<span style="color:#75715e"># check if the last col depends on the previous cols</span>
+dep_track_ <span style="color:#f92672">=</span> {x: check_dependence(ss_track, <span style="color:#f92672">*</span>x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> track_comb_}
+
+<span style="color:#75715e"># show which col depends on cols other than prime key</span>
+dep_track_true_ <span style="color:#f92672">=</span> {k[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> dep_track_<span style="color:#f92672">.</span>items() <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> True <span style="color:#f92672">and</span> <span style="color:#e6db74">&#39;track_id&#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> k}
+dep_track_true_
+
+<span style="color:#75715e"># try to find what cols they depend on</span>
+{k:v <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> dep_track_<span style="color:#f92672">.</span>items() <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> True <span style="color:#f92672">and</span> <span style="color:#e6db74">&#39;track_id&#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> k <span style="color:#f92672">and</span> len(k) <span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">3</span>}
+
+<span style="color:#75715e"># confirm that all other dependence are redundant</span>
+d1 <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#39;track_album_id&#39;</span>, <span style="color:#e6db74">&#39;track_album_name&#39;</span>)
+d2 <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#39;track_album_id&#39;</span>, <span style="color:#e6db74">&#39;track_album_release_date&#39;</span>)
+d3 <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#39;track_name&#39;</span>, <span style="color:#e6db74">&#39;track_album_id&#39;</span>, <span style="color:#e6db74">&#39;track_artist&#39;</span>)
+{k:v <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> dep_track_<span style="color:#f92672">.</span>items() 
+ <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> True 
+ <span style="color:#f92672">and</span> <span style="color:#e6db74">&#39;track_id&#39;</span> <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> k 
+ <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> (set(d1)<span style="color:#f92672">.</span>issubset(k) <span style="color:#f92672">or</span> set(d2)<span style="color:#f92672">.</span>issubset(k) <span style="color:#f92672">or</span> set(d3)<span style="color:#f92672">.</span>issubset(k))}
+</code></pre></div><h4 id="ss_main"><code>ss_main</code></h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># create combinations of all possible pair which the last col is potential dependent</span>
+pl2_comb <span style="color:#f92672">=</span> sum([list(combinations(cols_3, x)) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">4</span>)],[])
+pl2_comb_ <span style="color:#f92672">=</span> [tuple(sum([list(x),[y]],[])) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> pl2_comb <span style="color:#66d9ef">for</span> y <span style="color:#f92672">in</span> cols_3 <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> y <span style="color:#f92672">in</span> x]
+
+<span style="color:#75715e"># check if the last col depends on the previous cols</span>
+dep_pl2_ <span style="color:#f92672">=</span> {x: check_dependence(ss_main, <span style="color:#f92672">*</span>x) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> pl2_comb_}
+
+<span style="color:#75715e"># find the cols that depend on cols other than prime key</span>
+dep_playlist2_true <span style="color:#f92672">=</span> {k: v <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> dep_pl2_<span style="color:#f92672">.</span>items() <span style="color:#66d9ef">if</span> v <span style="color:#f92672">==</span> True <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> set(key_2)<span style="color:#f92672">.</span>issubset(k)}
+dep_playlist2_true
+</code></pre></div><p>Base on above results, the three sub tables don&rsquo;t satisfy 3NF.</p>
+<p>To fix it, we just need to:</p>
+<ul>
+<li>put the cols with transitive dependence into new tables with the cols they depend on other than prime key.</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># split ss_track</span>
+tran_cols <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;track_album_name&#39;</span>, <span style="color:#e6db74">&#39;track_album_release_date&#39;</span>, <span style="color:#e6db74">&#39;track_artist&#39;</span>]
+ss_track_ <span style="color:#f92672">=</span> ss_track[[x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> cols_1 <span style="color:#66d9ef">if</span> x <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> tran_cols]]<span style="color:#f92672">.</span>drop_duplicates()
+ss_track_track_album_id <span style="color:#f92672">=</span> ss_track[[<span style="color:#e6db74">&#39;track_album_id&#39;</span>, <span style="color:#e6db74">&#39;track_album_name&#39;</span>, <span style="color:#e6db74">&#39;track_album_release_date&#39;</span>]]<span style="color:#f92672">.</span>drop_duplicates()
+ss_track_track_album_id_track_name <span style="color:#f92672">=</span> ss_track[[<span style="color:#e6db74">&#39;track_name&#39;</span>, <span style="color:#e6db74">&#39;track_album_id&#39;</span>, <span style="color:#e6db74">&#39;track_artist&#39;</span>]]<span style="color:#f92672">.</span>drop_duplicates()
+
+<span style="color:#75715e"># split ss_main</span>
+ss_main_ <span style="color:#f92672">=</span> ss_main[[<span style="color:#e6db74">&#39;track_id&#39;</span>, <span style="color:#e6db74">&#39;playlist_subgenre&#39;</span>, <span style="color:#e6db74">&#39;playlist_id&#39;</span>]]<span style="color:#f92672">.</span>drop_duplicates()
+ss_playlist_id <span style="color:#f92672">=</span> ss_main[[<span style="color:#e6db74">&#39;playlist_id&#39;</span>, <span style="color:#e6db74">&#39;playlist_name&#39;</span>]]<span style="color:#f92672">.</span>drop_duplicates()
+</code></pre></div><p><a href="#normalization">return to normalization</a></p>
+<h3 id="save-to-sqlite3-schema">Save to SQLite3 Schema</h3>
+<p>Now we have all the sub tables:</p>
+<ul>
+<li><code>ss_track_</code>, <code>ss_track_track_album_id</code>, <code>ss_track_track_album_id_track_name</code>;</li>
+<li><code>ss_playlist_subgenre</code>;</li>
+<li><code>ss_main</code>, <code>ss_playlist_id</code>;</li>
+</ul>
+<p>Then we need to save them into a SQLite3 schema.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#75715e"># save tables into SQLite3 schema</span>
+engine <span style="color:#f92672">=</span> create_engine(<span style="color:#e6db74">&#39;sqlite:///ss.sqlite&#39;</span>, echo <span style="color:#f92672">=</span> False)
+ss_track_<span style="color:#f92672">.</span>to_sql(<span style="color:#e6db74">&#39;track&#39;</span>, con <span style="color:#f92672">=</span> engine, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index <span style="color:#f92672">=</span> False)
+ss_track_track_album_id<span style="color:#f92672">.</span>to_sql(<span style="color:#e6db74">&#39;track_album_id&#39;</span>, con <span style="color:#f92672">=</span> engine, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index <span style="color:#f92672">=</span> False)
+ss_track_track_album_id_track_name<span style="color:#f92672">.</span>to_sql(<span style="color:#e6db74">&#39;track_album_id_track_name&#39;</span>, con <span style="color:#f92672">=</span> engine, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index <span style="color:#f92672">=</span> False)
+ss_playlist_subgenre<span style="color:#f92672">.</span>to_sql(<span style="color:#e6db74">&#39;playlist_subgenre&#39;</span>, con <span style="color:#f92672">=</span> engine, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index <span style="color:#f92672">=</span> False)
+ss_main_<span style="color:#f92672">.</span>to_sql(<span style="color:#e6db74">&#39;main&#39;</span>, con <span style="color:#f92672">=</span> engine, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index <span style="color:#f92672">=</span> False)
+ss_playlist_id<span style="color:#f92672">.</span>to_sql(<span style="color:#e6db74">&#39;playlist_id&#39;</span>, con <span style="color:#f92672">=</span> engine, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>, index <span style="color:#f92672">=</span> False)
+</code></pre></div><p><img src="/images/ss_structure_.png" alt="ss_structure_"></p>
+<p><a href="#normalization">return to normalization</a></p>
+<h2 id="sql-query">SQL query</h2>
+<p>Now we can use the SQL query to find the names of all playlists that contain instrumentals.</p>
+<p>By the definition of column <code>instrumentalness</code>:</p>
+<blockquote>
+<p>Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly “vocal”. The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.</p>
+</blockquote>
+<p>We can see that higher <code>instrumentalness</code> represents higher probability of being a instrumental track. I will use 0 and 0.5 as threshold (above 0 means contain instrumentals, above 0.5 are intended to represent instrumental tracks).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">DISTINCT</span> playlist_name
+<span style="color:#66d9ef">FROM</span> playlist_id
+<span style="color:#66d9ef">INNER</span> <span style="color:#66d9ef">JOIN</span> main
+    <span style="color:#66d9ef">ON</span> playlist_id.playlist_id <span style="color:#f92672">=</span> main.playlist_id
+<span style="color:#66d9ef">INNER</span> <span style="color:#66d9ef">JOIN</span> track
+    <span style="color:#66d9ef">ON</span> main.track_id <span style="color:#f92672">=</span> track.track_id
+<span style="color:#66d9ef">WHERE</span> instrumentalness <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">DISTINCT</span> playlist_name
+<span style="color:#66d9ef">FROM</span> playlist_id
+<span style="color:#66d9ef">INNER</span> <span style="color:#66d9ef">JOIN</span> main
+    <span style="color:#66d9ef">ON</span> playlist_id.playlist_id <span style="color:#f92672">=</span> main.playlist_id
+<span style="color:#66d9ef">INNER</span> <span style="color:#66d9ef">JOIN</span> track
+    <span style="color:#66d9ef">ON</span> main.track_id <span style="color:#f92672">=</span> track.track_id
+<span style="color:#66d9ef">WHERE</span> instrumentalness <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">5</span>
+</code></pre></div><p>* Results not displayed here, see at Jupyter Notebook in GitHub repo</p>
+<p><a href="#content">return to content</a></p>
+<h2 id="link-to-github-repo">Link to GitHub Repo</h2>
+<p><a href="https://github.com/yuehan857/spotify_songs_normalization">https://github.com/yuehan857/spotify_songs_normalization</a></p>
+<h2 id="reference">Reference</h2>
+<ol>
+<li><a href="https://www.coder.work/article/6843836">https://www.coder.work/article/6843836</a></li>
+<li><a href="http://www.gitta.info/LogicModelin/en/html/DataConsiten_Norm3NF.html">http://www.gitta.info/LogicModelin/en/html/DataConsiten_Norm3NF.html</a></li>
+<li><a href="https://www.sqlitetutorial.net/sqlite-create-table/">https://www.sqlitetutorial.net/sqlite-create-table/</a></li>
+</ol>
+</div>
+
+
+  </main>
+
+  <footer>
+  <div>
+    &copy; Yue Han 2020
+
+    &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank">CC BY-SA 4.0</a>
+
+    
+  </div>
+</footer>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            displayMath: [['$$','$$'], ['\[','\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            TeX: {
+                equationNumbers: { autoNumber: "AMS" },
+                extensions: ["AMSmath.js", "AMSsymbols.js"]
+            }
+        }
+    });
+</script>
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
+          integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0="
+          crossorigin="anonymous"></script>
+
+  <script src="/js/blog.js"></script>
+
+  
+</body>
+</html>
