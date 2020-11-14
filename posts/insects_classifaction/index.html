@@ -15,7 +15,7 @@
 <meta itemprop="description" content="">
 <meta itemprop="datePublished" content="2020-11-15T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2020-11-15T00:00:00+00:00" />
-<meta itemprop="wordCount" content="964">
+<meta itemprop="wordCount" content="965">
 
 
 
@@ -242,7 +242,7 @@ hist <span style="color:#f92672">=</span> model<span style="color:#f92672">.</sp
 <p>Let us check how it performs on test images:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">test_loss, test_acc <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>evaluate(X_test, y_test)
 test_acc
-</code></pre></div><pre><code>&gt;&gt;&gt; 0.8111110925674438)
+</code></pre></div><pre><code>&gt;&gt;&gt; 0.8111110925674438
 </code></pre><p>The accuracy is about 80%. For a simple model with limited training set, this performance is not bad.</p>
 <h2 id="try-to-improve-classification-performance-by-hyperparameter-tunning">Try to improve classification performance by hyperparameter tunning</h2>
 <p>I tried to tunning the number of units in first hidden layer and the learning rate to improve the model&rsquo;s performance. Unfortunately, the improvement is very trivial. I think maybe we should try tunning other parameters, or just add more training images.</p>
@@ -254,7 +254,7 @@ best_hps<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39
 </code></pre><p><img src="/images/hw7/best_model.png" alt=""></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">test_loss, test_acc <span style="color:#f92672">=</span> best_model<span style="color:#f92672">.</span>evaluate(X_test, y_test)
 test_acc
-</code></pre></div><pre><code>0.8166666626930237
+</code></pre></div><pre><code>&gt;&gt;&gt; 0.8166666626930237
 </code></pre><h2 id="explain-how-our-model-classify-insects">Explain how our model classify insects</h2>
 <p>We may wonder how the neural network model &ldquo;magically&rdquo; classify the insects, what it does in the &ldquo;black box&rdquo;?  <code>shap</code> package helps us to figure it out.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">explainer <span style="color:#f92672">=</span> shap<span style="color:#f92672">.</span>GradientExplainer(best_model, X_train)
