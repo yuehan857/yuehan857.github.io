@@ -15,7 +15,7 @@
 <meta itemprop="description" content="">
 <meta itemprop="datePublished" content="2020-11-15T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2020-11-15T00:00:00+00:00" />
-<meta itemprop="wordCount" content="3">
+<meta itemprop="wordCount" content="964">
 
 
 
@@ -154,10 +154,138 @@
   <h1>HW7: Insects Images Classification using Deep Learning</h1>
 
   <div class="post-date">
-    <time datetime="2020-11-15T00:00:00Z">Nov 15, 2020</time> &middot; 1 min read
+    <time datetime="2020-11-15T00:00:00Z">Nov 15, 2020</time> &middot; 5 min read
   </div>
 
   <h1 id="insects-images-classification">Insects Images Classification</h1>
+<p>In this project, we will train a neural network model to classfy three different types of insects: beetles, cockroach and dragonflies</p>
+<p>Beetles:</p>
+<p><img src="/images/hw7/0.jpg" alt=""></p>
+<p>Cockroach:</p>
+<p><img src="/images/hw7/1.jpg" alt=""></p>
+<p>Dragonflies:</p>
+<p><img src="/images/hw7/2.jpg" alt=""></p>
+<h2 id="packages">Packages</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> shutil
+<span style="color:#f92672">import</span> re
+<span style="color:#f92672">import</span> random
+<span style="color:#f92672">from</span> collections <span style="color:#f92672">import</span> Counter
+
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+
+<span style="color:#75715e"># import tensorflow and keras to train deep learning model</span>
+<span style="color:#f92672">import</span> tensorflow <span style="color:#f92672">as</span> tf
+<span style="color:#f92672">import</span> tensorflow.keras <span style="color:#f92672">as</span> keras
+<span style="color:#f92672">from</span> tensorflow.keras.utils <span style="color:#f92672">import</span> plot_model
+
+<span style="color:#75715e"># for hyperparams tunning</span>
+<span style="color:#f92672">import</span> kerastuner <span style="color:#f92672">as</span> kt
+<span style="color:#f92672">import</span> IPython
+
+<span style="color:#75715e"># import pillow to manipulating img data</span>
+<span style="color:#f92672">import</span> PIL
+<span style="color:#f92672">from</span> PIL <span style="color:#f92672">import</span> Image
+
+<span style="color:#75715e"># for explaining nn</span>
+<span style="color:#f92672">import</span> shap
+</code></pre></div><h2 id="transform-the-image-into-nparray">Transform the image into <code>np.array</code></h2>
+<p>We can use <code>pillow</code> package to load image and convert it to grayscale image (for color image, we will have RGB color values for each pixel, for grayscale image, we only have gray level value for each pixel).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">img1 <span style="color:#f92672">=</span> Image<span style="color:#f92672">.</span>open(<span style="color:#e6db74">&#34;insects/train/beetles/5556579.jpg&#34;</span>)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#39;L&#39;</span>)
+img1
+</code></pre></div><p><img src="/images/hw7/gray.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">img2 <span style="color:#f92672">=</span> Image<span style="color:#f92672">.</span>open(<span style="color:#e6db74">&#34;insects/train/beetles/5556580.jpg&#34;</span>)<span style="color:#f92672">.</span>convert(<span style="color:#e6db74">&#39;L&#39;</span>)
+img1<span style="color:#f92672">.</span>size, img2<span style="color:#f92672">.</span>size 
+</code></pre></div><pre><code>&gt;&gt;&gt; ((384, 376), (384, 320))
+</code></pre><p>We can see that images&rsquo; sizes and shapes are not uniformed, so we should standardized them!
+First of all, we transform all the images to square shape, and scale them to 100 × 100 size.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">img1 <span style="color:#f92672">=</span> img1<span style="color:#f92672">.</span>crop((<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">376</span>, <span style="color:#ae81ff">376</span>))
+img1<span style="color:#f92672">.</span>thumbnail((<span style="color:#ae81ff">100</span>,<span style="color:#ae81ff">100</span>), PIL<span style="color:#f92672">.</span>Image<span style="color:#f92672">.</span>ANTIALIAS)
+</code></pre></div><p><img src="/images/hw7/gray_reshape.png" alt=""></p>
+<p>Then we transform the image to <code>np.array</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">np<span style="color:#f92672">.</span>asarray(img1)<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>&gt;&gt;&gt; (100, 100)
+</code></pre><p>Now, we should do above process for all of the images in train and test folders.</p>
+<p>* Codes in jupyter notebook in my GitHub repo, just display results here.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">X_train, y_train <span style="color:#f92672">=</span> img2data_mass(paths<span style="color:#f92672">=</span>train_image_path, if_shuffle<span style="color:#f92672">=</span>True, set_random_seed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+X_test, y_test <span style="color:#f92672">=</span> img2data_mass(paths<span style="color:#f92672">=</span>test_image_path, if_shuffle<span style="color:#f92672">=</span>True, set_random_seed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</code></pre></div><p>Check the train and test dataset</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">X_train<span style="color:#f92672">.</span>shape, X_test<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>&gt;&gt;&gt; ((1019, 100, 100), (180, 100, 100))
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">Counter(y_train), Counter(y_test)
+</code></pre></div><pre><code>&gt;&gt;&gt; (Counter({0: 460, 2: 319, 1: 240}), Counter({2: 60, 0: 60, 1: 60}))
+</code></pre><h2 id="initial-trial-of-building-a-deep-learning-model">Initial trial of building a deep learning model</h2>
+<p>First, we need to normalize images&rsquo; gray level value.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py"><span style="color:#66d9ef">if</span> X_train<span style="color:#f92672">.</span>max() <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>:
+    X_train <span style="color:#f92672">=</span> X_train <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
+<span style="color:#66d9ef">if</span> X_test<span style="color:#f92672">.</span>max() <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>:
+    X_test <span style="color:#f92672">=</span> X_test <span style="color:#f92672">/</span> <span style="color:#ae81ff">255.0</span>
+</code></pre></div><p>Then we set up the layers and the compiler, then fit model.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">model <span style="color:#f92672">=</span> keras<span style="color:#f92672">.</span>Sequential([
+    keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Flatten(input_shape<span style="color:#f92672">=</span>(<span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">100</span>), name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Flatten_input&#34;</span>),
+    keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">128</span>, activation<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>sigmoid, name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Hidden_layer_1&#34;</span>),
+    keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">16</span>, activation<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>sigmoid, name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Hidden_layer_2&#34;</span>),
+    keras<span style="color:#f92672">.</span>layers<span style="color:#f92672">.</span>Dense(<span style="color:#ae81ff">3</span>, activation<span style="color:#f92672">=</span>tf<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>softmax, name<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Output&#34;</span>)
+])
+
+model<span style="color:#f92672">.</span>compile(optimizer<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;SGD&#34;</span>,
+              loss<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sparse_categorical_crossentropy&#39;</span>,
+              metrics<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;accuracy&#39;</span>])
+
+hist <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>fit(X_train, y_train,epochs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span>, verbose<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</code></pre></div><p>The neural network model has four layers, the first one is just flatten the 100 × 100 matrix into vector, the second and third layer are &ldquo;black box&rdquo;, the last layer are output layer, which is the probability of been three types of insects.</p>
+<p><img src="/images/hw7/model_layer.png" alt=""></p>
+<p>Neural network model&rsquo;s training process:</p>
+<p><img src="/images/hw7/model.png" alt=""></p>
+<p>Let us check how it performs on test images:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">test_loss, test_acc <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>evaluate(X_test, y_test)
+test_acc
+</code></pre></div><pre><code>&gt;&gt;&gt; 0.8111110925674438)
+</code></pre><p>The accuracy is about 80%. For a simple model with limited training set, this performance is not bad.</p>
+<h2 id="try-to-improve-classification-performance-by-hyperparameter-tunning">Try to improve classification performance by hyperparameter tunning</h2>
+<p>I tried to tunning the number of units in first hidden layer and the learning rate to improve the model&rsquo;s performance. Unfortunately, the improvement is very trivial. I think maybe we should try tunning other parameters, or just add more training images.</p>
+<p>* Codes in jupyter notebook in my GitHub repo, just display results here.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">best_model <span style="color:#f92672">=</span> tuner<span style="color:#f92672">.</span>get_best_models(<span style="color:#ae81ff">1</span>)[<span style="color:#ae81ff">0</span>]
+best_hps <span style="color:#f92672">=</span> tuner<span style="color:#f92672">.</span>get_best_hyperparameters(num_trials <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)[<span style="color:#ae81ff">0</span>]
+best_hps<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;units&#39;</span>), best_hps<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#39;learning_rate&#39;</span>)
+</code></pre></div><pre><code>&gt;&gt;&gt; (256, 0.01)
+</code></pre><p><img src="/images/hw7/best_model.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">test_loss, test_acc <span style="color:#f92672">=</span> best_model<span style="color:#f92672">.</span>evaluate(X_test, y_test)
+test_acc
+</code></pre></div><pre><code>0.8166666626930237
+</code></pre><h2 id="explain-how-our-model-classify-insects">Explain how our model classify insects</h2>
+<p>We may wonder how the neural network model &ldquo;magically&rdquo; classify the insects, what it does in the &ldquo;black box&rdquo;?  <code>shap</code> package helps us to figure it out.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">explainer <span style="color:#f92672">=</span> shap<span style="color:#f92672">.</span>GradientExplainer(best_model, X_train)
+sv <span style="color:#f92672">=</span> explainer<span style="color:#f92672">.</span>shap_values(X_test[:<span style="color:#ae81ff">10</span>]);
+model<span style="color:#f92672">.</span>predict(X_test[:<span style="color:#ae81ff">10</span>]), y_test[:<span style="color:#ae81ff">10</span>]
+</code></pre></div><pre><code>&gt;&gt;&gt; (array([[0.04111223, 0.38144788, 0.57743984],
+            [0.01283908, 0.13159503, 0.8555659 ],
+            [0.6701151 , 0.28406647, 0.04581848],
+            [0.02699221, 0.90831107, 0.06469667],
+            [0.05692604, 0.77929944, 0.16377448],
+            [0.03640981, 0.08732451, 0.8762657 ],
+            [0.9205949 , 0.06933252, 0.01007263],
+            [0.01420745, 0.0982885 , 0.887504  ],
+            [0.9605511 , 0.03331361, 0.00613525],
+            [0.01886279, 0.10616471, 0.87497246]], dtype=float32),
+&gt;&gt;&gt; array([2, 0, 0, 1, 1, 2, 0, 2, 0, 2]))
+</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-py" data-lang="py">shap<span style="color:#f92672">.</span>image_plot([sv[i] <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3</span>)], X_test[:<span style="color:#ae81ff">10</span>])
+</code></pre></div><p><img src="/images/hw7/shap.png" alt=""></p>
+<p>When I first look into the images of three different types of insects, I am a little worry about if the model could do better than random guess, since some of the images are too ambiguous! Some of them are just heads, some of them are just tails, some of them are a bunch of insects, and some of them the insect is too small to see.</p>
+<p>So when I found test accuracy turned out to be about 80%, I am a little surprised. I guess the model probably even performs better then me (I am really not an insect expert).</p>
+<p>By looking at the SHAP plot, I found that the model&rsquo;s classifying logic is somehow weird. It seem that the model classify the insect mainly depends on the background gray level. A solid evidence is the second images, the true label is &ldquo;dragonflies&rdquo;, but it was classified as &ldquo;beetles&rdquo;. But it is clear that the second images is not dragonflies since they don&rsquo;t have wings, which for me should be an obvious features for dragonfly. Why this misclassification happened? We noticed that the background of second image is dark, while for most dragonflies images, the background color is dark, leading the model to think &ldquo;oh, this dark-background images should be &lsquo;dragonflies&rsquo;&rdquo;. The SHAP value of second image also shows that the dark background give evidence for &ldquo;dragonflies&rdquo;.</p>
+<p><img src="/images/hw7/shap_2.png" alt=""></p>
+<p>I am not pretty sure how the model tell between beetles and cockroach. The SHAP value doesn&rsquo;t give me any clue. One guess is that the background for beetles is more pure compare to cockroach, which make some sense, since cockroach are more likely to live in dirty and messy envrionment(probably?)</p>
+<p>Though the model&rsquo;s classifying logic seems don&rsquo;t make much sense for me, the model still sucessfully classify 80% of the test images. The model looks at the image as a whole and it pay attention to more macroscopic feature e.g. the background, while I focus more on local feature e.g. the if the insect has wing.</p>
+<h2 id="link-to-github-repo">Link to GitHub repo</h2>
+<p><a href="https://github.com/yuehan857/insects_classification.git">https://github.com/yuehan857/insects_classification.git</a></p>
+<h2 id="reference">Reference</h2>
+<ol>
+<li><a href="https://developer.ibm.com/articles/image-recognition-challenge-with-tensorflow-and-keras-pt1/">https://developer.ibm.com/articles/image-recognition-challenge-with-tensorflow-and-keras-pt1/</a></li>
+<li><a href="https://www.tensorflow.org/tutorials/keras/keras_tuner">https://www.tensorflow.org/tutorials/keras/keras_tuner</a></li>
+</ol>
 </div>
 
 
