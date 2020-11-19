@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content="Hugo 0.74.3" />
 
-  <title>Final Project: Covid-19 Trial Data Analysis and Dashboard &middot; Yue Han</title>
+  <title>Final Project: Dashboard for COVID-19 Trial Exploration &middot; Yue Han</title>
 
   <meta name="description" content="" />
 
   
 
-<meta itemprop="name" content="Final Project: Covid-19 Trial Data Analysis and Dashboard">
+<meta itemprop="name" content="Final Project: Dashboard for COVID-19 Trial Exploration">
 <meta itemprop="description" content="">
-<meta itemprop="datePublished" content="2020-11-15T00:00:00+00:00" />
-<meta itemprop="dateModified" content="2020-11-15T00:00:00+00:00" />
-<meta itemprop="wordCount" content="2">
+<meta itemprop="datePublished" content="2020-11-18T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-11-18T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1655">
 
 
 
@@ -23,16 +23,16 @@
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Final Project: Covid-19 Trial Data Analysis and Dashboard"/>
+<meta name="twitter:title" content="Final Project: Dashboard for COVID-19 Trial Exploration"/>
 <meta name="twitter:description" content=""/>
 
 
-<meta property="og:title" content="Final Project: Covid-19 Trial Data Analysis and Dashboard" />
+<meta property="og:title" content="Final Project: Dashboard for COVID-19 Trial Exploration" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://yuehan857.github.io/posts/covid_trial/" />
-<meta property="article:published_time" content="2020-11-15T00:00:00+00:00" />
-<meta property="article:modified_time" content="2020-11-15T00:00:00+00:00" />
+<meta property="article:published_time" content="2020-11-18T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-11-18T00:00:00+00:00" />
 
 
 
@@ -151,13 +151,99 @@
 
   <main class="content container">
   <div class="post">
-  <h1>Final Project: Covid-19 Trial Data Analysis and Dashboard</h1>
+  <h1>Final Project: Dashboard for COVID-19 Trial Exploration</h1>
 
   <div class="post-date">
-    <time datetime="2020-11-15T00:00:00Z">Nov 15, 2020</time> &middot; 1 min read
+    <time datetime="2020-11-18T00:00:00Z">Nov 18, 2020</time> &middot; 8 min read
   </div>
 
-  <h1 id="covid-19-trial">Covid-19 Trial</h1>
+  <h1 id="covid-19-clinical-trial-exploration">COVID-19 Clinical Trial Exploration</h1>
+<ul>
+<li><a href="#what-our-project-aim-about">What our project aim about</a></li>
+<li><a href="#what-did-we-do-to-achieve-our-goal">What did we do to achieve our goal</a></li>
+<li><a href="#techical-skill-list">Techical skill list</a></li>
+<li><a href="#link-to-github-repo">Link to GitHub Repo</a></li>
+<li><a href="#reference">Reference</a></li>
+</ul>
+<h2 id="what-our-project-aim-about">What our project aim about</h2>
+<p>In 2020, an unexpected epidemic COVID-19  sweep across the world, severly changed our life. Many analysis about the COVID-19 came up, mostly about predicting when spread of COVID-19 will slow down or what factors influence its spreading. Seldom of them focus on the process of clinical trials related to COVID-19. In <a href="https://clinicaltrials.gov/ct2/results?cond=COVID-19">ClinicalTrialsGov</a> there are information about the on going COVID-19 clinical trials, but the interface of this website is not very statisfying.</p>
+<p><img src="/images/project/ctg.png" alt=""></p>
+<p>So we want to make a dashboard that clearly <strong>demonstrate some important aspects</strong> of on going clinical trials about COVID-19, and beyond that, we want to <strong>use some ML alogrithm to explore more</strong> about the trials data.</p>
+<p>Our target audience generally are those care about COVID-19 clinical process and what to see more summerized info about the clinical trials. Our dashboard is also suit for people in Uited States who want to find out the information about clinical trial near them or in some location in United States they interested in.</p>
+<p><a href="#covid-19-clinical-trial-exploration">return to top</a></p>
+<h2 id="what-did-we-do-to-achieve-our-goal">What did we do to achieve our goal</h2>
+<p>Our dashboard mainly composed of four parts:</p>
+<ol>
+<li>Visualization for Trials all over the world</li>
+<li>Visualization for Trials in United States</li>
+<li>Clustering trials by similarity</li>
+<li>Predicting activeness of the trials (i.e. if the trial is still recruting or closed)</li>
+</ol>
+<p>Before doing about parts, we first did some exploratory data analysis and cleaned data for above parts. My main tasks are clean data for visualizations and clustering, and visualize worldwide trials and establish clustering model, so I will mainly talk about what I did in the following part.</p>
+<h3 id="data-cleaning">Data cleaning</h3>
+<p>The raw data from <a href="https://clinicaltrials.gov/ct2/results?cond=COVID-19">ClinicalTrialsGov</a>  is really messy, for example, the <code>Study Design</code> column has multiple entries, <code>Location</code> columns includes both country, state\province, and institution location. So our first job is to clean them up. After first cleaning, we have divide <code>Location</code> into 3 new columns <code>Location_Country</code>, <code>Location_State\Province</code>，<code>Location_Institution</code>, and we also made the mutlti-entries columns into seperate tables, and store them in a schema called <code>covid_trials.db</code>. But it was still not enough for visualization, so I did some further cleaning for visualization.</p>
+<p>The first thing is to transform <code>Age</code> columns to simpler category, since the original category are too messy, e.g. the original <code>Age</code> column value is something like &ldquo;18 Years and older   (Adult, Older Adult)&rdquo;, for simplicity, I only extract the content in the bracket. Then I transform all the date information into datetime format for easier manipulation when calculating the interval time between them. Also I transform the <code>Enrollment</code> and <code>Trial_Duration</code> (calculated based on <code>Study_Start</code> and <code>Study_Completion</code>) into categorical variables since the range of them are too large.
+Lastly, I did some manipulation on <code>Location_Country</code> in order to match the name in <code>ne_50m_admin_0_countries.shp</code> file (this file contains geo info about countries). By doing so, I can plot the map for the trials.</p>
+<p>The data cleaning for my clustering model is basically the same as for visualization, expect that I also did some manipulation to the multi-entries columns table, e.g. some of their value is too messy, so I changed the value to be <code>True</code> is the value in not <code>None</code> and otherwise <code>False</code>.</p>
+<h3 id="visualization-of-worldwilde-clinical-trials">Visualization of worldwilde clinical trials</h3>
+<h4 id="map-plot">Map plot</h4>
+<p>For visualization part, I basiclly made two type of plots, the first type is the map plot. Actually, there is a map plot in the <a href="https://clinicaltrials.gov/ct2/results/map?cond=COVID-19&amp;map=">ClinicalTrialsGov</a>, but it can only show the total number of the trial in each country or the states in U.S. I I improved it by making the map that you can adjust the time interval (i.e. the starting time and the ending time of the trial) and study type (i.e. observational trial or interventional trial) to filter the data. Besides, I also let user to choose the center of the plot, for example if the user is interested in Aisa, then she/he can choose to centered at Asia to look around the trials conditions there. Also, I let user to choose how many countries to display, or pick there interested coutries. Last but not the least, I show the table of trials count for the countries user select. So as you can see, my plot is much interactive than the original map plot in the offical website.</p>
+<p><strong>The offical website map:</strong></p>
+<p><img src="/images/project/omap.png" alt=""></p>
+<p><strong>Our dashboard map:</strong></p>
+<p><img src="/images/project/dmap.gif" alt=""></p>
+<h4 id="barpie-chart">Bar/Pie chart</h4>
+<p>I also make bar and pie chart to show the distribution of count of trials for several interested attributions. Data for these charts can also be filtered as in the map plot. User can choose to show <code>Status</code>, <code>Phase</code>, <code>Duration</code>, <code>Funded Bys</code>, <code>Enrollment</code> and <code>Age</code> attribution.</p>
+<h4 id="some-information-we-can-find-in-our-visualization">Some information we can find in our visualization</h4>
+<p>We found that for all type of trials, U.S. has the most trials in the world, but when it comes to observational trials, the France becomes the first. Most of the trial happens between 2020/01/01 to 2022/01/01. Looking at the duration of the trials, it seems that about 70% of the trials are below 1 years, and 20% are in from 1 to 2 years, seldoms are over 2 years.</p>
+<p>You can visit our dashboard to explore more information by playing around with my visualization!</p>
+<h3 id="clustering-clinical-trials-by-similarity">Clustering clinical trials by similarity</h3>
+<p>We want to explore more about the trials data, and one problem pumped in my mind that: can we divide the trials into different groups? Put it in another way, which cluster of trials are similar to each other and what is a typical trial in that cluster? This is obviously an clustering problem, and when talking about clustering, K-Mean is the first thing that come in my mind.</p>
+<p>But K-Mean is not applicable this time because most of our columns are categorical variables! The &ldquo;distance&rdquo; of two trial for each attribution is meanless (e.g. we can not calculate the distance between &ldquo;PHASE1&rdquo;, &ldquo;PHASE2&rdquo;, &ldquo;PHASE3&rdquo;, we can only calculate the distance between numerical values like 1, 2, 3). After some research, I found that K-Mode is the best choice for me. It&rsquo;s logic is basically the same as K-Mean, except that when deciding the centroid of each cluster, insteading of using the mean, it use the mode, which make the perfect sense. For example, if our dataset is students from different contries, for the initial cluster, in cluster 1, 5 students come from U.S., 3 from China, 2 from Japan, so the centroid of this cluster is U.S. The rest steps of K-Mode are exactly the same as K-mean.</p>
+<p>Luckly, there is a package called <code>kmodes</code> that we can use to simply achieve K-Mode algorithm.</p>
+<p>Another issue is how to choose the best number of cluster? Since we do not have the &ldquo;true value&rdquo; for each cluster, we cannot evaluated based on the true value. <code>kmodes</code> will only return total cost of the model, and the cost is strictly non-increasing as the number of cluster goes up, so we cannot choose the one with lowest cost. I tried one method called &ldquo;Elbow Method&rdquo;:</p>
+<p><img src="https://i.stack.imgur.com/t7v7J.png" alt="">
+source: <a href="https://datascience.stackexchange.com/questions/64455/how-to-evaluate-the-k-modes-clusters">https://datascience.stackexchange.com/questions/64455/how-to-evaluate-the-k-modes-clusters</a></p>
+<p>Which looks very nice! The logic is that, when the number of cluster goes up, cost will decrease slower and slower, so we set a benchmark, when the cost decrease not that fast, we stop. So I wrote some code using &ldquo;Elbow Method&rdquo; to automatically choose an &ldquo;optimal&rdquo; number of cluster.</p>
+<p>Then we can do our clustering model! In our dashboard, we display the result of our cluster by showing a bar chart for the distribution of each categories in each cluster for the attribution used to build the model. Besides, we also show the table of centriod of each cluster, from where you can know how a &ldquo;typical trial&rdquo; is in each cluster.</p>
+<p>For example, from the following bar chart, we can see that you in cluster 0, 1 and 6, most trials are observational, while in cluster 2 to 5, most trials are interventional, so for cluster 0, a typical trial is an obervational trial.</p>
+<p><img src="/images/project/cl.png" alt=""></p>
+<p>You can visit our dashboard to play around our clustering model! You can choose which scope of data to use (all trials or just trials in U.S.), which set of attributions to use and you can also designate the number of cluster instead of using the &lsquo;auto&rsquo; number of cluster.</p>
+<p><img src="/images/project/clp.png" alt=""></p>
+<p>An issue we need to care about is that some of the attribution of the trials are still numerical variables, and I transform them into categorical variables. But the fact is that the distance is meaningful for those attributions e.g. for the number of enrollment, 100 - 500 is closer to 500 - 1000 than to over 10000. So I also tried other algorithm K-Prototype, which is the combination of K-Mean and K-Mode. I use log of the numerical values to ease the effect of extreme large value, and applied K-Prototype. The result of K-Prototype clustering model should more reasonable for those numerical or ordered categorical attributions.</p>
+<p>See blow bar charts, we  find that K-Prototype model makes more sense. For example, for K-Prototype model, in cluster 0, most trials are 7 - 12 months, and then 1 - 2 years, and then 4 - 6 months, while for K-Mode model, in cluster 0, we have most 7 - 12 months and 1 - 3 months, but logically 4 - 6 months is nearer to 7 - 12 months than 1 - 3 months.</p>
+<p><strong>Using K-Mode</strong></p>
+<p><img src="/images/project/clkm.png" alt=""></p>
+<p><strong>Using K-Prototype</strong></p>
+<p><img src="/images/project/clkp.png" alt=""></p>
+<h2 id="my-parts-done-at-last-i-would-like-to-thank-all-the-attribution-my-teammates-oana-enache-and-yi-mi-made-to-this-project">🎆🎉My parts done! At last, I would like to thank all the attribution my teammates <code>@Oana Enache</code> and <code>@Yi Mi</code> made to this project.</h2>
+<p><a href="#covid-19-clinical-trial-exploration">return to top</a></p>
+<h2 id="techical-skill-set">Techical skill set</h2>
+<p>The techical skill I used in our project are mainly:</p>
+<ol>
+<li>Data Cleaning: <code>pandas</code></li>
+<li>Visualization: <code>plotly</code>, <code>geopandas</code></li>
+<li>Machine Learning: <code>kmodes</code>, <code>sklearn</code></li>
+<li>Dashboard: <code>streamlit</code></li>
+<li>Version Control: <code>git</code></li>
+<li>Environment Management: <code>conda</code></li>
+</ol>
+<p><a href="#covid-19-clinical-trial-exploration">return to top</a></p>
+<h2 id="link-to-our-dashboard">Link to Our Dashboard</h2>
+<p><a href="https://share.streamlit.io/oena/bios823_final_project/dashboard/app_main.py">https://share.streamlit.io/oena/bios823_final_project/dashboard/app_main.py</a></p>
+<h2 id="link-to-github-repo">Link to GitHub repo</h2>
+<p><a href="https://github.com/oena/bios823_final_project">https://github.com/oena/bios823_final_project</a></p>
+<h2 id="reference">Reference:</h2>
+<h4 id="for-information-about-the-trials-data">For information about the trials data</h4>
+<p><a href="https://clinicaltrials.gov/ct2/about-studies/glossary">https://clinicaltrials.gov/ct2/about-studies/glossary</a></p>
+<h4 id="for-visualization">For visualization:</h4>
+<p><a href="https://www.naturalearthdata.com">https://www.naturalearthdata.com</a></p>
+<h4 id="for-clustering">For clustering:</h4>
+<ol>
+<li><a href="https://github.com/nicodv/kmodes">https://github.com/nicodv/kmodes</a></li>
+<li><a href="https://www.kaggle.com/ashydv/bank-customer-clustering-k-modes-clustering">https://www.kaggle.com/ashydv/bank-customer-clustering-k-modes-clustering</a></li>
+<li><a href="https://datascience.stackexchange.com/questions/64455/how-to-evaluate-the-k-modes-clusters">https://datascience.stackexchange.com/questions/64455/how-to-evaluate-the-k-modes-clusters</a></li>
+</ol>
 </div>
 
 
