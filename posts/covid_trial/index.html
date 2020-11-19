@@ -15,7 +15,7 @@
 <meta itemprop="description" content="">
 <meta itemprop="datePublished" content="2020-11-18T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2020-11-18T00:00:00+00:00" />
-<meta itemprop="wordCount" content="1646">
+<meta itemprop="wordCount" content="1644">
 
 
 
@@ -205,7 +205,7 @@ Lastly, I did some manipulation on <code>Location_Country</code> in order to mat
 <p>Another issue is how to choose the best number of cluster? Since we do not have the &ldquo;true value&rdquo; for each cluster, we cannot evaluated based on the true value. <code>kmodes</code> will only return total cost of the model, and the cost is strictly non-increasing as the number of cluster goes up, so we cannot choose the one with lowest cost. I tried one method called &ldquo;Elbow Method&rdquo;:</p>
 <p><img src="https://i.stack.imgur.com/t7v7J.png" alt="">
 source: <a href="https://datascience.stackexchange.com/questions/64455/how-to-evaluate-the-k-modes-clusters">https://datascience.stackexchange.com/questions/64455/how-to-evaluate-the-k-modes-clusters</a></p>
-<p>Which looks very nice! The logic is that, when the number of cluster goes up, cost will decrease slower and slower, so we set a benchmark, when the cost decrease not that fast, we stop. So I wrote some code using &ldquo;Elbow Method&rdquo; to automatically choose an &ldquo;optimal&rdquo; number of cluster.</p>
+<p>Which looks very nice! The logic is, when the number of cluster goes up, cost will decrease slower and slower, so we set a benchmark, when the cost decrease not that fast, we stop. I wrote some code using &ldquo;Elbow Method&rdquo; to automatically choose an &ldquo;optimal&rdquo; number of cluster.</p>
 <p>Then we can do our clustering model! In our dashboard, we display the result of our cluster by showing a bar chart for the distribution of each categories in each cluster for the attribution used to build the model. Besides, we also show the table of centriod of each cluster, from where you can know how a &ldquo;typical trial&rdquo; is in each cluster.</p>
 <p>For example, from the following bar chart, we can see that you in cluster 0, 1 and 6, most trials are observational, while in cluster 2 to 5, most trials are interventional, so for cluster 0, a typical trial is an obervational trial.</p>
 <p><img src="/images/project/cl.png" alt=""></p>
